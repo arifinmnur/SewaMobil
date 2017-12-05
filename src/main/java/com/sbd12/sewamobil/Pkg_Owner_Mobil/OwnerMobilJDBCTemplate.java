@@ -2,7 +2,6 @@
 package com.sbd12.sewamobil.Pkg_Owner_Mobil;
 
 import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobil;
-import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobilMapper;
 import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobil;
 import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobilMapper;
 import java.util.List;

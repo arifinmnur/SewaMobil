@@ -36,4 +36,6 @@
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Merk_Mobil"/>
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Data_Mobil"/>
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Jenis_Mobil"/>
+    <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Data_Pegawai"/>
+    <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Kostomer"/>
 </beans>
