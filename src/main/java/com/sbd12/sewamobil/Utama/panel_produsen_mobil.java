@@ -45,13 +45,13 @@ public class panel_produsen_mobil extends javax.swing.JPanel {
     public List<JenisMobil> jeniss;
     public List<ProdusenMobil> produsens;
     public MerkMobilJDBCTemplate db;
-    public ProdusenmobilJDBCTemplate produsenmobilJDBCTemplate;
+   // public ProdusenmobilJDBCTemplate produsenmobilJDBCTemplate;
 
     public panel_produsen_mobil() throws ClassNotFoundException {
         initComponents();
         ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        produsenmobilJDBCTemplate = (ProdusenmobilJDBCTemplate)context.getBean("produsenmobilJDBCTemplate");
-        produsens = produsenmobilJDBCTemplate.listSemua();
+       // produsenmobilJDBCTemplate = (ProdusenmobilJDBCTemplate)context.getBean("produsenmobilJDBCTemplate");
+        //produsens = produsenmobilJDBCTemplate.listSemua();
         
         
            /*jTable1.addMouseListener(new MouseAdapter() {
