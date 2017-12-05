@@ -10,11 +10,6 @@ package com.sbd12.sewamobil.Utama;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-/*import tab_barang.FTambahBarang;
-import tab_barang.FUpdateBarang;
-import tab_barang.crud_Barang;
-import tab_barang.dt_Barang;
-import tab_barang.barangTableModel;*/
 
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -31,7 +26,7 @@ import java.awt.event.MouseEvent;
  *
  * @author ArieDZ 2
  */
-public class panel_data_barang extends javax.swing.JPanel {
+public class panel_merk_mobil extends javax.swing.JPanel {
 
     /**
      * Creates new form panel_data_barang
@@ -40,8 +35,7 @@ public class panel_data_barang extends javax.swing.JPanel {
     public ProdusenTableModel tabelProdusen;
     public MerkMobilTableModel tableMerk;
     public DataMobilTableModel tableMobil;
-    /* public FTambahBarang formtambah;
-     public FUpdateBarang formupdate;*/
+    
     public frm_Utama_metro form_parent;
     
     public List<JenisMobil> jeniss;
@@ -49,19 +43,14 @@ public class panel_data_barang extends javax.swing.JPanel {
     public List<MerkMobil> merk_Mobils ;
     public List<DataMobil> data_mobil;
     public MerkMobilJDBCTemplate db;
-    public ProdusenMobilJDBCTemplate produsenmobilJDBCTemplate;
+    public DataMobilJDBCTemplate produsenmobilJDBCTemplate;
     public MerkMobilJDBCTemplate merk_mobilJDBCTemplate;
     public DataMobilJDBCTemplate data_mobilJDBCTemplate;
 
-    public panel_data_barang() throws ClassNotFoundException {
+    public panel_merk_mobil() throws ClassNotFoundException {
         initComponents();
-       /* ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        ProdusenMobilJDBCTemplate produsenmobilJDBCTemplate = (ProdusenMobilJDBCTemplate)
-                context.getBean("produsenMobilJDBCTemplate");
-        produsens = produsenmobilJDBCTemplate.listSemua(); */
-        
         ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        MerkMobilJDBCTemplate merk_mobilJDBCTemplate = (MerkMobilJDBCTemplate)
+         merk_mobilJDBCTemplate = (MerkMobilJDBCTemplate)
                 context.getBean("merkMobilJDBCTemplate");
 
 
@@ -75,11 +64,10 @@ public class panel_data_barang extends javax.swing.JPanel {
                     int baris = jTable1.getSelectedRow();
                     String id_mobil = (String) tableMerk.getValueAt(baris, 0);
                     System.out.println("id =" + id_mobil);
-                  // MerkMobil mm =  db.pilih_data(id_mobil);
-                   MerkMobil mm =merk_mobilJDBCTemplate.pilih_data(id_mobil);
-                   tf_id_merk.setText(mm.getId_merk_mobil());
-                    tf_id_jenis.setText(mm.getId_jenis());
-                    tf_id_produsen.setText(mm.getId_produsen_mobil());
+                    MerkMobil mm =merk_mobilJDBCTemplate.pilih_data(id_mobil);
+                    tf_id_merk.setText(mm.getId_merk_mobil());
+                    jCb_produsen.setSelectedItem(mm.getNama_produsen_mobil());
+                    jCb_jenis.setSelectedItem(mm.getNama_jenis());
                     tf_nama_merk.setText(mm.getNama_Merk_Mobil()); 
                 
                 
@@ -87,8 +75,9 @@ public class panel_data_barang extends javax.swing.JPanel {
             }
         });
         tampilData_merk();
-        //tampilData_produsen();
-
+        
+        produsens=merk_mobilJDBCTemplate.combo_box_produsen_mobil(jCb_produsen);
+        jeniss=merk_mobilJDBCTemplate.combo_box_jenis_mobil(jCb_jenis);
         refreshData();
     }
     public void tampilData_produsen() throws ClassNotFoundException
@@ -128,10 +117,11 @@ public class panel_data_barang extends javax.swing.JPanel {
 
 
     public void refreshData() throws ClassNotFoundException
-    {
-       /* tabelbarang.setData(db.tampil_semua());
-        tabelbarang.fireTableDataChanged();
-        jTable1.changeSelection(0, 0, false, false);*/
+    {   
+        merk_Mobils = merk_mobilJDBCTemplate.listSemua();
+        tableMerk.setData(merk_Mobils);
+        tableMerk.fireTableDataChanged();
+        jTable1.changeSelection(0, 0, false, false);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -149,10 +139,6 @@ public class panel_data_barang extends javax.swing.JPanel {
         BtEdit = new javax.swing.JButton();
         BtHapus = new javax.swing.JButton();
         BtRefresh = new javax.swing.JButton();
-        BtCari = new javax.swing.JButton();
-        jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jToggleButton3 = new javax.swing.JToggleButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         tf_id_merk = new javax.swing.JTextField();
@@ -160,9 +146,9 @@ public class panel_data_barang extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        tf_id_jenis = new javax.swing.JTextField();
-        tf_id_produsen = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jCb_produsen = new javax.swing.JComboBox<>();
+        jCb_jenis = new javax.swing.JComboBox<>();
+        BtCari = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(960, 510));
 
@@ -213,34 +199,6 @@ public class panel_data_barang extends javax.swing.JPanel {
             }
         });
 
-        BtCari.setText("Cari");
-        BtCari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtCariActionPerformed(evt);
-            }
-        });
-
-        jToggleButton1.setText("Produsen Mobil");
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
-            }
-        });
-
-        jToggleButton2.setText("Merk Mobil");
-        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton2ActionPerformed(evt);
-            }
-        });
-
-        jToggleButton3.setText("Data Mobil");
-        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton3ActionPerformed(evt);
-            }
-        });
-
         jLabel2.setText("ID Merk");
 
         tf_id_merk.addActionListener(new java.awt.event.ActionListener() {
@@ -255,17 +213,9 @@ public class panel_data_barang extends javax.swing.JPanel {
 
         jLabel5.setText("Jenis");
 
-        tf_id_jenis.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_id_jenisActionPerformed(evt);
-            }
-        });
+        jCb_produsen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        tf_id_produsen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tf_id_produsenActionPerformed(evt);
-            }
-        });
+        jCb_jenis.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -286,13 +236,12 @@ public class panel_data_barang extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(102, 102, 102)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tf_id_jenis, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(tf_nama_merk, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                        .addComponent(tf_id_merk, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(tf_id_produsen, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(606, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jCb_jenis, 0, 150, Short.MAX_VALUE)
+                    .addComponent(tf_id_merk)
+                    .addComponent(tf_nama_merk)
+                    .addComponent(jCb_produsen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(616, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,22 +253,22 @@ public class panel_data_barang extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(tf_id_produsen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13)
+                    .addComponent(jCb_produsen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(tf_id_jenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                    .addComponent(jCb_jenis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(tf_nama_merk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Jenis Mobil");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        BtCari.setText("Cari");
+        BtCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BtCariActionPerformed(evt);
             }
         });
 
@@ -335,21 +284,12 @@ public class panel_data_barang extends javax.swing.JPanel {
                     .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(BtEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(BtHapus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtCari, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtRefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(0, 98, Short.MAX_VALUE))
+                        .addComponent(BtRefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(bgLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(bgLayout.createSequentialGroup()
-                        .addComponent(jToggleButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToggleButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToggleButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         bgLayout.setVerticalGroup(
@@ -357,12 +297,6 @@ public class panel_data_barang extends javax.swing.JPanel {
             .addGroup(bgLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jToggleButton1)
-                    .addComponent(jToggleButton2)
-                    .addComponent(jToggleButton3)
-                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bgLayout.createSequentialGroup()
@@ -399,33 +333,78 @@ public class panel_data_barang extends javax.swing.JPanel {
 
     private void BtTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtTambahActionPerformed
         // TODO add your handling code here:
-        
-      /* tf_id_merk.getText();
-       tf_id_produsen.getText();
-       tf_id_jenis.getText();
-       tf_nama_merk.getText();*/
+         System.out.println("Menekan Tombol Tambah");
+         
+       String nama_produsenPilih = jCb_produsen.getSelectedItem().toString();
+       String id_produsenPilih = "-";
+       String nama_jenisPilih = jCb_jenis.getSelectedItem().toString();
+       String id_jenisPilih="-";
        
-       merk_mobilJDBCTemplate.create(tf_id_merk.getText(), tf_id_produsen.getText(), tf_id_jenis.getText(), tf_nama_merk.getText());
-       /* try {
-           // refreshData();
+       if((!nama_jenisPilih.equalsIgnoreCase("Pilih"))&&(!nama_produsenPilih.equalsIgnoreCase("Pilih"))){
+       for(ProdusenMobil produsenMobil:produsens)
+       {
+           if (produsenMobil.getNama_produsen().equals(nama_produsenPilih))
+           {
+               id_produsenPilih=produsenMobil.getId_produsen();
+           }
+       }
+       for(JenisMobil jenisMobil:jeniss)
+       {
+           if (jenisMobil.getNama_jenis_mobil().equals(nama_jenisPilih))
+           {
+               id_jenisPilih=jenisMobil.getId_jenis_mobil();
+           }
+       }
+       
+       System.out.println("nama : "+nama_produsenPilih+" id : "+id_produsenPilih);
+       System.out.println("nama : "+nama_jenisPilih+" id : "+id_jenisPilih);
+       merk_mobilJDBCTemplate.create(tf_id_merk.getText(), id_produsenPilih, id_jenisPilih, tf_nama_merk.getText());
+       }
+       else{
+           System.out.println("Dihentikan -ComboBox produsen:"+nama_produsenPilih+", -ComboBox Jenis:"+nama_jenisPilih);
+        }
+       
+      
+        try {
+            refreshData();
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-
+            Logger.getLogger(panel_merk_mobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_BtTambahActionPerformed
 
     private void BtEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtEditActionPerformed
-            int baris = jTable1.getSelectedRow();
-            String id=(String)tableMerk.getValueAt(baris, 0);
             System.out.println("Menekan tombol edit");
             
-            System.out.println(id);
-            System.out.println(tf_id_produsen.getText());
-            System.out.println( tf_id_jenis.getText());
-            System.out.println(tf_nama_merk.getText());
-            
-            
-            merk_mobilJDBCTemplate.update(id, tf_id_produsen.getText(), tf_id_jenis.getText(), tf_nama_merk.getText());
+            int baris = jTable1.getSelectedRow();
+       String id=(String)tableMerk.getValueAt(baris, 0);            
+       String nama_produsenPilih = jCb_produsen.getSelectedItem().toString();
+       String id_produsenPilih = "-";
+       String nama_jenisPilih = jCb_jenis.getSelectedItem().toString();
+       String id_jenisPilih="-";
+       
+       if((!nama_jenisPilih.equalsIgnoreCase("Pilih"))&&(!nama_produsenPilih.equalsIgnoreCase("Pilih"))){
+       for(ProdusenMobil produsenMobil:produsens)
+       {
+           if (produsenMobil.getNama_produsen().equals(nama_produsenPilih))
+           {
+               id_produsenPilih=produsenMobil.getId_produsen();
+           }
+       }
+       for(JenisMobil jenisMobil:jeniss)
+       {
+           if (jenisMobil.getNama_jenis_mobil().equals(nama_jenisPilih))
+           {
+               id_jenisPilih=jenisMobil.getId_jenis_mobil();
+           }
+       }
+       merk_mobilJDBCTemplate.edit(tf_id_merk.getText(), id_produsenPilih, id_jenisPilih, tf_nama_merk.getText());
+        }
+       
+        try {
+            refreshData();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(panel_merk_mobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_BtEditActionPerformed
 
     private void BtHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtHapusActionPerformed
@@ -446,6 +425,11 @@ public class panel_data_barang extends javax.swing.JPanel {
             {
                 
             }*/
+        try {
+            refreshData();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(panel_merk_mobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_BtHapusActionPerformed
 
     private void BtRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtRefreshActionPerformed
@@ -453,120 +437,26 @@ public class panel_data_barang extends javax.swing.JPanel {
             // TODO add your handling code here:
             refreshData();
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(panel_merk_mobil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_BtRefreshActionPerformed
 
     private void BtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtCariActionPerformed
         // TODO add your handling code here:
-        /*String katakunci;
+        String katakunci;
         katakunci=JOptionPane.showInputDialog(null,"Nama barang yang di cari?","Filter/Pencarian",JOptionPane.QUESTION_MESSAGE);
         if(katakunci!=null)
         {
-            try {
-                tabelbarang.setData(db.filter(katakunci));
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            tabelbarang.fireTableDataChanged();
-        }*/
+            merk_Mobils =  merk_mobilJDBCTemplate.pilih_data_like(katakunci);
+            tableMerk.setData(merk_Mobils);
+            tableMerk.fireTableDataChanged();
+            jTable1.changeSelection(0, 0, false, false);
+        }
     }//GEN-LAST:event_BtCariActionPerformed
-
-    /**
-     *
-     * @param evt
-     * "Config-Spring.xml" lokasi settingan database ada di sini src/main/resource
-     */
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
-        /*
-            Perhatian!! context.getBean(String) <-- Huruf awal String harus kecil
-         */
-        ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        produsenmobilJDBCTemplate = (ProdusenMobilJDBCTemplate)
-                context.getBean("produsenMobilJDBCTemplate");
-        produsens = produsenmobilJDBCTemplate.listSemua();
-
-        try {
-            tampilData_produsen();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
-    /**
-     *
-     * @param evt
-     * "Config-Spring.xml" lokasi settingan database ada di sini src/main/resource
-     */
-    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
-        // TODO add your handling code here:
-        /*
-            Perhatian!! context.getBean(String) <-- Huruf awal String harus kecil
-         */
-        ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        merk_mobilJDBCTemplate = (MerkMobilJDBCTemplate)
-                context.getBean("merkMobilJDBCTemplate");
-
-
-        merk_Mobils = merk_mobilJDBCTemplate.listSemua();
-
-
-        try {
-            tampilData_merk();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jToggleButton2ActionPerformed
-/**
-     *
-     * @param evt
-     * "Config-Spring.xml" lokasi settingan database ada di sini src/main/resource
-     */
-    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
-        // TODO add your handling code here:
-         ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        data_mobilJDBCTemplate = (DataMobilJDBCTemplate)
-                context.getBean("dataMobilJDBCTemplate");
-
-
-        data_mobil = data_mobilJDBCTemplate.listSemua();
-
-
-       try {
-            TampilData_mobil();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jToggleButton3ActionPerformed
 
     private void tf_id_merkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_id_merkActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tf_id_merkActionPerformed
-
-    private void tf_id_jenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_id_jenisActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tf_id_jenisActionPerformed
-
-    private void tf_id_produsenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tf_id_produsenActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tf_id_produsenActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-          ApplicationContext context = new ClassPathXmlApplicationContext("Config-Spring.xml");
-        JenisMobilJDBCTemplate jenismobilJDBC = (JenisMobilJDBCTemplate)
-                context.getBean("jenisMobilJDBCTemplate");
-
-
-        jeniss = jenismobilJDBC.listSemua();
-
-
-       try {
-            tampilJenisMobil();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -576,7 +466,8 @@ public class panel_data_barang extends javax.swing.JPanel {
     private javax.swing.JButton BtRefresh;
     private javax.swing.JButton BtTambah;
     private javax.swing.JPanel bg;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> jCb_jenis;
+    private javax.swing.JComboBox<String> jCb_produsen;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -584,12 +475,7 @@ public class panel_data_barang extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
-    private javax.swing.JTextField tf_id_jenis;
     private javax.swing.JTextField tf_id_merk;
-    private javax.swing.JTextField tf_id_produsen;
     private javax.swing.JTextField tf_nama_merk;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,4 +1,4 @@
-package com.sbd12.sewamobil.Pkg_Merk_Mobil;
+package com.sbd12.sewamobil.Pkg_Data_Transaksi;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,6 +11,7 @@ package com.sbd12.sewamobil.Pkg_Merk_Mobil;
  */
 import com.sbd12.sewamobil.Pkg_Jenis_Mobil.JenisMobil;
 import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobil;
+import java.sql.Date;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Service;
 
 @Repository
 @Service
-public class MerkMobilJDBCTemplate implements MerkMobilDAO {
+public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
 
     @Autowired
     private DataSource dataSource;
@@ -42,45 +43,49 @@ public class MerkMobilJDBCTemplate implements MerkMobilDAO {
         this.dataSource = dataSource;
         this.jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
-    private final String QUERY_PILIH_SEMUA = "select mm.*,pm.nama_produsen,jm.nama_jenis"
-                + " FROM tbl_merk_mobil        AS mm "
-                + " JOIN tbl_produsen_mobil    AS PM   ON mm.id_produsen_mobil=pm.id_produsen_mobil"
-                + " JOIN tbl_jenis_mobil       AS jm   ON mm.id_jenis_mobil=jm.id_jenis_mobil";
+    private final String QUERY_PILIH_SEMUA = "SELECT dt.*,mm.nama_mobil,pg.nama_p,kt.nama_k "
+            + "FROM tbl_data_transaksi AS DT "
+            + "JOIN tbl_data_mobil AS DM ON dt.no_pol=dm.no_pol "
+            + "JOIN tbl_merk_mobil AS mm ON dm.id_merk_mobil=mm.id_merk_mobil "
+            + "JOIN tbl_pegawai AS PG ON dt.id_pegawai=pg.id_pegawai "
+            + "JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer";
     
-    private final String QUERY_PILIH_CARI =QUERY_PILIH_SEMUA+" where mm.id_merk_mobil=?";
-    private final String QUERY_PILIH_LIKE =QUERY_PILIH_SEMUA+" where mm.nama_mobil like ?";
+    private final String QUERY_PILIH_CARI =QUERY_PILIH_SEMUA+" where dt.no_transaksi=?";
+    private final String QUERY_PILIH_LIKE =QUERY_PILIH_SEMUA+" where dt.nama_mobil like ?";
     
     @Override
-    public void create(String id_merk_mobil, String id_produsen_mobil, String id_jenis_mobil, String nama_mobil) {
-        String SQL = "insert into tbl_merk_mobil (id_merk_mobil, id_produsen_mobil,id_jenis_mobil, nama_mobil) values (?, ?,?,?)";
+    public void create(String no_transaksi, String id_kostumer, String no_pol, String id_pegawai, Date tglpinjam, Date tglkembali,double hargatotal) {
+        String SQL = "INSERT INTO tbl_data_transaksi (no_transaksi, id_kostumer,no_pol, id_pegawai,tglpinjam,tglkembali,hargatotal) values (?, ?,?,?,?,?,?)";
 
-        jdbcTemplateObject.update(SQL, id_merk_mobil, id_produsen_mobil, id_jenis_mobil, nama_mobil);
+        jdbcTemplateObject.update(SQL, no_transaksi, id_kostumer,no_pol, id_pegawai,tglpinjam,tglkembali,hargatotal);
         System.out.println("Masuk fungsi update");
         return;
     }
 
     @Override
-    public List<MerkMobil> listSemua() {
-        return jdbcTemplateObject.query(QUERY_PILIH_SEMUA, new MerkMobilMapper());
+    public List<DataTransaksi> listSemua() {
+        
+        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_SEMUA, new DataTransaksiMapper());
+        return dataTransaksis;
     }
 
-    public MerkMobil pilih_data(String kode) {
+    public DataTransaksi pilih_data(String kode) {
 
-        List<MerkMobil> merkmobil = jdbcTemplateObject.query(QUERY_PILIH_CARI, new MerkMobilMapper(), kode);
-        return merkmobil.get(0);
+        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_CARI, new DataTransaksiMapper(), kode);
+        return dataTransaksis.get(0);
     }
     
-    public List<MerkMobil> pilih_data_like(String kode) {
+    public List<DataTransaksi> pilih_data_like(String kode) {
         
-        List<MerkMobil> merkmobil = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new MerkMobilMapper(), "%"+kode+"%");
-        return merkmobil;
+        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new DataTransaksiMapper(), "%"+kode+"%");
+        return dataTransaksis;
     }
 
     @Override
-    public MerkMobil getId(Integer id) {
+    public DataTransaksi getId(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    @Override
+    /*@Override
     public List<JenisMobil> combo_box_jenis_mobil(JComboBox Combo){
         String SQL = "SELECT * FROM tbl_jenis_mobil";
         
@@ -96,7 +101,7 @@ public class MerkMobilJDBCTemplate implements MerkMobilDAO {
         });
 
         return list;
-    } 
+    } */
     @Override
     public List<ProdusenMobil> combo_box_produsen_mobil(JComboBox Combo){
         String SQL = "SELECT * FROM tbl_produsen_mobil";
@@ -113,7 +118,7 @@ public class MerkMobilJDBCTemplate implements MerkMobilDAO {
 
         return list;
     } 
-    
+    /*
     @Override
     public void delete(String id)
     {
@@ -123,28 +128,32 @@ public class MerkMobilJDBCTemplate implements MerkMobilDAO {
     }
     
      @Override
-    public void edit(String id,String idProd,String idJenis,String namaMerk)
+    public void edit(String no_transaksi, String id_kostumer, String no_pol, String id_pegawai, Date tglpinjam, Date tglkembali,double hargatotal)
     {
-        System.out.println("Masuk fungsi update");
+      /*  System.out.println("Masuk fungsi update");
         String SQL="UPDATE tbl_merk_mobil SET id_produsen_mobil=?,id_jenis_mobil=?,nama_mobil=? where id_merk_mobil=?";
         
         jdbcTemplateObject.update(SQL,idProd,idJenis,namaMerk,id);
          
-         return;
+         return;*/
     }
     
     
-  public class MerkMobilMapper implements RowMapper<MerkMobil> {
+  public class DataTransaksiMapper implements RowMapper<DataTransaksi> {
    @Override
-   public MerkMobil mapRow(ResultSet rs, int rowNum) throws SQLException {
-      MerkMobil merkMobil = new MerkMobil();
-      merkMobil.setId_merk_mobil(rs.getString("id_Merk_mobil"));
-      merkMobil.setId_produsen_mobil(rs.getString("id_produsen_mobil"));
-      merkMobil.setId_jenis(rs.getString("id_jenis_mobil"));
-      merkMobil.setNama_Merk_Mobil(rs.getString("nama_mobil"));
-      merkMobil.setNama_produsen_mobil(rs.getString("nama_produsen"));
-      merkMobil.setNama_jenis(rs.getString("nama_jenis"));
-      return merkMobil;
+   public DataTransaksi mapRow(ResultSet rs, int rowNum) throws SQLException {
+      DataTransaksi dataTransaksi = new DataTransaksi();
+      dataTransaksi.setNo_transaksi(rs.getString("no_transaksi"));
+      dataTransaksi.setId_kostumer(rs.getString("id_kostumer"));
+      dataTransaksi.setId_pegawai(rs.getString("id_pegawai"));
+      dataTransaksi.setNo_pol(rs.getString("no_pol"));
+      dataTransaksi.setNama_kostumer(rs.getString("nama_k"));
+      dataTransaksi.setNama_pegawai(rs.getString("nama_p"));
+      dataTransaksi.setNama_mobil(rs.getString("nama_mobil"));
+      dataTransaksi.setTglpinjam(rs.getDate("tglpinjam"));
+      dataTransaksi.setTglkembali(rs.getDate("tglkembali"));
+      dataTransaksi.setHarga_total(rs.getDouble("harga_total"));
+      return dataTransaksi;
    }
 }    
 }

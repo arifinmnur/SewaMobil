@@ -1,4 +1,4 @@
-package com.sbd12.sewamobil.Pkg_Merk_Mobil;
+package com.sbd12.sewamobil.Pkg_Data_Transaksi;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,12 +13,13 @@ package com.sbd12.sewamobil.Pkg_Merk_Mobil;
 
 import com.sbd12.sewamobil.Pkg_Jenis_Mobil.JenisMobil;
 import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobil;
+import java.sql.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import javax.swing.JComboBox;
 import org.springframework.stereotype.Repository;
 
-public interface MerkMobilDAO {
+public interface DataTransaksiDAO {
    /** 
       * This is the method to be used to initialize
       * database resources ie. connection.
@@ -27,17 +28,15 @@ public interface MerkMobilDAO {
    public void setDataSource(DataSource ds);
    
    
-   public void edit(String id,String idProd,String idJenis,String namaMerk);
+   public void edit(String no_transaksi,String id_kostumer,String no_pol,String id_pegawai, Date tglpinjam,Date tglkembali,double hargatotal);
    public void delete(String id);
-   public void create(String id_merk_mobil, String id_produsen_mobil, String id_jenis_mobil, String nama_mobil );
-   public MerkMobil getId(Integer id);
+   public void create(String no_transaksi, String id_kostumer, String no_pol, String id_pegawai, Date tglpinjam, Date tglkembali,double hargatotal);
+   public DataTransaksi getId(Integer id);
    
    /** 
      * This is the method to be used to list down
      * all the records from the Student table.
      * @return 
    */
-   public List<MerkMobil> listSemua();
-   public List<ProdusenMobil> combo_box_produsen_mobil(JComboBox Combo);
-   public List<JenisMobil> combo_box_jenis_mobil(JComboBox Combo);
+   public List<DataTransaksi> listSemua();
 }

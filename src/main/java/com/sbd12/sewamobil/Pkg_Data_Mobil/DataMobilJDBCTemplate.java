@@ -5,8 +5,7 @@
  */
 package com.sbd12.sewamobil.Pkg_Data_Mobil;
 
-import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobil;
-import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobilMapper;
+
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
