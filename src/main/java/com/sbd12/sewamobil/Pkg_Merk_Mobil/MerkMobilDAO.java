@@ -11,6 +11,8 @@ package com.sbd12.sewamobil.Pkg_Merk_Mobil;
  * @author ArieDZ_2
  */
 
+import com.sbd12.sewamobil.Pkg_Jenis_Mobil.JenisMobil;
+import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobil;
 import java.util.List;
 import javax.sql.DataSource;
 import javax.swing.JComboBox;
@@ -24,12 +26,9 @@ public interface MerkMobilDAO {
    */
    public void setDataSource(DataSource ds);
    
-   /** 
-      * This is the method to be used to create
-      * a record in the Student table.
-     * @param name
-     * @param age
-   */
+   
+   public void edit(String id,String idProd,String idJenis,String namaMerk);
+   public void delete(String id);
    public void create(String id_merk_mobil, String id_produsen_mobil, String id_jenis_mobil, String nama_mobil );
    public MerkMobil getId(Integer id);
    
@@ -39,5 +38,6 @@ public interface MerkMobilDAO {
      * @return 
    */
    public List<MerkMobil> listSemua();
-   public void combo_box(JComboBox Combo);
+   public List<ProdusenMobil> combo_box_produsen_mobil(JComboBox Combo);
+   public List<JenisMobil> combo_box_jenis_mobil(JComboBox Combo);
 }

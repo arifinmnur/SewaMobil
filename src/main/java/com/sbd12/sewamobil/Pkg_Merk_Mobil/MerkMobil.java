@@ -60,4 +60,12 @@ public class MerkMobil {
    public String getNama_jenis() {
       return nama_jenis;
    }
+
+    Object getNama_jenis_mobil() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    Object getHarga_mobil() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

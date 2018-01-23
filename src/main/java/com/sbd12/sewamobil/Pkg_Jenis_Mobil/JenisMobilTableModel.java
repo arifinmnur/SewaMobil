@@ -3,44 +3,46 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sbd12.sewamobil.Pkg_Data_Mobil;
+package com.sbd12.sewamobil.Pkg_Jenis_Mobil;
 
-import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobil;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-
 /**
  *
- * @author resas
+ * @author Anonymous
  */
-public class DataMobilTableModel extends AbstractTableModel{
-    private List<DataMobil> data;
-    private String[] nameField={"No Polisi","Merk","Owner","Harga"};
+public class JenisMobilTableModel extends AbstractTableModel{
     
-    public void setData(List<DataMobil> data)
+    private List<JenisMobil> data;
+    private String[] nameField={"ID Jenis","Jenis Mobil","Harga"};
+    
+    public void setData(List<JenisMobil> data)
     {
         this.data=data;
     }
-    
+
     @Override
     public int getRowCount() {
-      return data.size();
+       return data.size();
     }
 
     @Override
     public int getColumnCount() {
-      return nameField.length; }
+        return nameField.length; }
+    
 
     @Override
     public Object getValueAt(int baris, int kolom) {
         
-        DataMobil kst=data.get(baris);
+    
+       JenisMobil kst=data.get(baris);
         switch(kolom)
         {
-            case 0: return kst.getNo_pol();
-            case 1: return kst.getNama_mobil();
-            case 2: return kst.getNama_ow();
-            case 3: return kst.getHarga_perhari();
+            case 0: return kst.getId_jenis_mobil();
+            case 1: return kst.getNama_jenis_mobil();
+            case 2: return kst.getHarga_mobil();
             default : return null;
         }
     }

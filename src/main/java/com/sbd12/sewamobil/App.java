@@ -21,7 +21,7 @@ public class App {
          * Comment
          */
         frm_Utama_metro frmUtama = new frm_Utama_metro();
-        frmUtama.setVisible(true);
+     //   frmUtama.setVisible(true);
     }
     
 }
