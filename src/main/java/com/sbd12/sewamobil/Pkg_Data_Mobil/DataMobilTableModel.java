@@ -15,7 +15,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class DataMobilTableModel extends AbstractTableModel{
     private List<DataMobil> data;
-    private String[] nameField={"No Polisi","Merk","Owner"};
+    private String[] nameField={"No Polisi","Merk","Owner","Harga"};
     
     public void setData(List<DataMobil> data)
     {
@@ -40,6 +40,7 @@ public class DataMobilTableModel extends AbstractTableModel{
             case 0: return kst.getNo_pol();
             case 1: return kst.getNama_mobil();
             case 2: return kst.getNama_ow();
+            case 3: return kst.getHarga_perhari();
             default : return null;
         }
     }

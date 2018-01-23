@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
  *
  * @author ArieDZ_2
  */
-public class DataTransaksi {
+public class DataPembayaran {
 
     private String no_transaksi;
     private String id_kostumer;
@@ -34,17 +34,8 @@ public class DataTransaksi {
     private double harga_total;
     private double harga_hari;
     private java.sql.Timestamp tgltransaksi;
-    private String status;
-
+    
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public double getHarga() {
         return harga;
@@ -62,6 +53,7 @@ public class DataTransaksi {
         this.harga_diskon = harga_diskon;
     }
 
+    
     public int getLamaPinjam() {
         return lamaPinjam;
     }
