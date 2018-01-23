@@ -16,6 +16,25 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_sbd12_sewa_mobil` /*!40100 DEFAULT C
 
 USE `db_sbd12_sewa_mobil`;
 
+/*Table structure for table `detail_transaksi` */
+
+DROP TABLE IF EXISTS `detail_transaksi`;
+
+CREATE TABLE `detail_transaksi` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `no_pol` char(9) NOT NULL,
+  `id_petugas_pengembalian` char(9) DEFAULT NULL,
+  `tglkembali` datetime DEFAULT NULL,
+  `denda` double DEFAULT NULL,
+  `catatan` text,
+  PRIMARY KEY (`no_transaksi`,`no_pol`),
+  KEY `no_pol` (`no_pol`),
+  KEY `id_petugas_pengembalian` (`id_petugas_pengembalian`),
+  CONSTRAINT `detail_transaksi_ibfk_2` FOREIGN KEY (`no_pol`) REFERENCES `tbl_data_mobil` (`no_pol`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `detail_transaksi_ibfk_3` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `detail_transaksi_ibfk_4` FOREIGN KEY (`id_petugas_pengembalian`) REFERENCES `tbl_pegawai` (`id_pegawai`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Data for the table `detail_transaksi` */
 
 insert  into `detail_transaksi`(`no_transaksi`,`no_pol`,`id_petugas_pengembalian`,`tglkembali`,`denda`,`catatan`) values 
@@ -24,12 +43,42 @@ insert  into `detail_transaksi`(`no_transaksi`,`no_pol`,`id_petugas_pengembalian
 ('TRX0000002','D4666AS',NULL,NULL,NULL,NULL),
 ('TRX0000003','D2111FZ',NULL,NULL,NULL,NULL);
 
+/*Table structure for table `login` */
+
+DROP TABLE IF EXISTS `login`;
+
+CREATE TABLE `login` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(25) NOT NULL,
+  `password` varchar(25) NOT NULL,
+  `nama` varchar(25) NOT NULL,
+  `email` varchar(25) NOT NULL,
+  `level` enum('Admin','Operator','User') NOT NULL,
+  `status` enum('Login','Tidak Login') NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
 /*Data for the table `login` */
 
 insert  into `login`(`id`,`username`,`password`,`nama`,`email`,`level`,`status`) values 
 (1,'admin','admin','Divananda Zikry Fadilla','admin@gmail.com','Admin','Tidak Login'),
 (2,'ivan','ivan','icut','divanandazf@gmail.com','Operator','Tidak Login'),
 (3,'mila','milamonika','Mila Monika Berlyana','mila@mila.com','User','Tidak Login');
+
+/*Table structure for table `tbl_data_mobil` */
+
+DROP TABLE IF EXISTS `tbl_data_mobil`;
+
+CREATE TABLE `tbl_data_mobil` (
+  `no_pol` char(9) NOT NULL,
+  `id_merk_mobil` char(8) NOT NULL,
+  `id_owner` char(8) NOT NULL,
+  PRIMARY KEY (`no_pol`),
+  KEY `id_owner` (`id_owner`),
+  KEY `id_merk_mobil` (`id_merk_mobil`),
+  CONSTRAINT `tbl_data_mobil_ibfk_1` FOREIGN KEY (`id_owner`) REFERENCES `tbl_owner_mobil` (`id_owner`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_data_mobil_ibfk_2` FOREIGN KEY (`id_merk_mobil`) REFERENCES `tbl_merk_mobil` (`id_merk_mobil`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_data_mobil` */
 
@@ -75,6 +124,27 @@ insert  into `tbl_data_mobil`(`no_pol`,`id_merk_mobil`,`id_owner`) values
 ('D9999IJ','SZI06','OW02'),
 ('D9999TE','MTS01','OW01');
 
+/*Table structure for table `tbl_data_transaksi` */
+
+DROP TABLE IF EXISTS `tbl_data_transaksi`;
+
+CREATE TABLE `tbl_data_transaksi` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `id_kostumer` char(9) NOT NULL,
+  `id_pegawai` char(9) NOT NULL,
+  `tglpinjam` date NOT NULL,
+  `tglkembali` date DEFAULT NULL,
+  `harga_sebelum_diskon` double NOT NULL,
+  `harga_diskon` double NOT NULL,
+  `tgltransaksi` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Status` enum('BELUM SELESAI','SELESAI') NOT NULL,
+  PRIMARY KEY (`no_transaksi`),
+  KEY `id_kostumer` (`id_kostumer`),
+  KEY `id_pegawai` (`id_pegawai`),
+  CONSTRAINT `tbl_data_transaksi_ibfk_3` FOREIGN KEY (`id_pegawai`) REFERENCES `tbl_pegawai` (`id_pegawai`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_data_transaksi_ibfk_4` FOREIGN KEY (`id_kostumer`) REFERENCES `tbl_kostumer` (`id_kostumer`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Data for the table `tbl_data_transaksi` */
 
 insert  into `tbl_data_transaksi`(`no_transaksi`,`id_kostumer`,`id_pegawai`,`tglpinjam`,`tglkembali`,`harga_sebelum_diskon`,`harga_diskon`,`tgltransaksi`,`Status`) values 
@@ -82,12 +152,36 @@ insert  into `tbl_data_transaksi`(`no_transaksi`,`id_kostumer`,`id_pegawai`,`tgl
 ('TRX0000002','KZ000041B','PG001','2018-01-18','2018-01-18',400000,40000,'2018-01-15 09:08:53','BELUM SELESAI'),
 ('TRX0000003','KZ000041D','PG002','2018-01-18','2018-01-20',0,0,'2018-01-16 23:59:12','BELUM SELESAI');
 
+/*Table structure for table `tbl_jenis_member_dan_diskon` */
+
+DROP TABLE IF EXISTS `tbl_jenis_member_dan_diskon`;
+
+CREATE TABLE `tbl_jenis_member_dan_diskon` (
+  `counter` int(11) NOT NULL AUTO_INCREMENT,
+  `id_jenis_member` char(5) NOT NULL,
+  `nama_jenis_member` varchar(20) DEFAULT NULL,
+  `diskon` double DEFAULT NULL,
+  PRIMARY KEY (`id_jenis_member`),
+  UNIQUE KEY `counter` (`counter`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
 /*Data for the table `tbl_jenis_member_dan_diskon` */
 
 insert  into `tbl_jenis_member_dan_diskon`(`counter`,`id_jenis_member`,`nama_jenis_member`,`diskon`) values 
 (1,'NON','Non-Member',0),
 (3,'PRM','Premium',0.2),
 (2,'REG','Regular',0.1);
+
+/*Table structure for table `tbl_jenis_mobil` */
+
+DROP TABLE IF EXISTS `tbl_jenis_mobil`;
+
+CREATE TABLE `tbl_jenis_mobil` (
+  `id_jenis_mobil` char(8) NOT NULL,
+  `nama_jenis` varchar(20) DEFAULT NULL,
+  `harga` double DEFAULT NULL,
+  PRIMARY KEY (`id_jenis_mobil`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_jenis_mobil` */
 
@@ -101,6 +195,27 @@ insert  into `tbl_jenis_mobil`(`id_jenis_mobil`,`nama_jenis`,`harga`) values
 ('SDN2','Sedan Eksekutif',400000),
 ('SDN3','Sedan Premium',600000);
 
+/*Table structure for table `tbl_kostumer` */
+
+DROP TABLE IF EXISTS `tbl_kostumer`;
+
+CREATE TABLE `tbl_kostumer` (
+  `id_kostumer` char(9) NOT NULL,
+  `no_ktp` char(128) NOT NULL,
+  `id_member` char(9) DEFAULT NULL,
+  `jenis_member` char(4) NOT NULL DEFAULT 'NON',
+  `nama_depan_k` varchar(15) NOT NULL,
+  `nama_belakang_k` varchar(15) DEFAULT NULL,
+  `jenis_kelamin_k` enum('L','P') DEFAULT NULL,
+  `alamat_k` varchar(30) DEFAULT NULL,
+  `tanggal_lahir_k` date DEFAULT NULL,
+  `no_telepon_k` varchar(13) DEFAULT NULL,
+  `tanggal_join` date DEFAULT NULL,
+  PRIMARY KEY (`id_kostumer`),
+  KEY `jenis_member` (`jenis_member`),
+  CONSTRAINT `tbl_kostumer_ibfk_1` FOREIGN KEY (`jenis_member`) REFERENCES `tbl_jenis_member_dan_diskon` (`id_jenis_member`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Data for the table `tbl_kostumer` */
 
 insert  into `tbl_kostumer`(`id_kostumer`,`no_ktp`,`id_member`,`jenis_member`,`nama_depan_k`,`nama_belakang_k`,`jenis_kelamin_k`,`alamat_k`,`tanggal_lahir_k`,`no_telepon_k`,`tanggal_join`) values 
@@ -113,6 +228,22 @@ insert  into `tbl_kostumer`(`id_kostumer`,`no_ktp`,`id_member`,`jenis_member`,`n
 ('KZ000041E','44444444','PRML00002','PRM','Rivat','Sungkar','L','Jalan Pabuaran','1991-12-31',NULL,'2017-12-31'),
 ('KZ000041F','3333333333',NULL,'NON','Ghina','Hannah','P','Jalan Setiabudi','1992-12-23','0896','2017-12-31'),
 ('KZ0000420','5555555555555555',NULL,'NON','Sani','Arisani','P','','1997-03-24',NULL,'2017-12-31');
+
+/*Table structure for table `tbl_merk_mobil` */
+
+DROP TABLE IF EXISTS `tbl_merk_mobil`;
+
+CREATE TABLE `tbl_merk_mobil` (
+  `id_merk_mobil` char(8) NOT NULL,
+  `id_produsen_mobil` char(8) NOT NULL,
+  `id_jenis_mobil` char(8) NOT NULL,
+  `nama_mobil` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id_merk_mobil`),
+  KEY `id_produsen_mobil` (`id_produsen_mobil`),
+  KEY `id_jenis_moobil_ibfk_1` (`id_jenis_mobil`),
+  CONSTRAINT `id_jenis_moobil_ibfk_1` FOREIGN KEY (`id_jenis_mobil`) REFERENCES `tbl_jenis_mobil` (`id_jenis_mobil`),
+  CONSTRAINT `tbl_merk_mobil_ibfk_1` FOREIGN KEY (`id_produsen_mobil`) REFERENCES `tbl_produsen_mobil` (`id_produsen_mobil`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_merk_mobil` */
 
@@ -156,12 +287,45 @@ insert  into `tbl_merk_mobil`(`id_merk_mobil`,`id_produsen_mobil`,`id_jenis_mobi
 ('TYT14','TYT','SDN1','Vios'),
 ('TYT15','TYT','SDN2','Corrola Altis');
 
+/*Table structure for table `tbl_owner_mobil` */
+
+DROP TABLE IF EXISTS `tbl_owner_mobil`;
+
+CREATE TABLE `tbl_owner_mobil` (
+  `id_owner` char(9) NOT NULL,
+  `no_ktp_ow` char(128) NOT NULL,
+  `nama_ow` varchar(30) NOT NULL,
+  `jenis_kelamin_ow` enum('L','P') DEFAULT NULL,
+  `alamat_ow` varchar(30) NOT NULL,
+  `no_telepon_ow` varchar(13) NOT NULL,
+  PRIMARY KEY (`id_owner`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Data for the table `tbl_owner_mobil` */
 
 insert  into `tbl_owner_mobil`(`id_owner`,`no_ktp_ow`,`nama_ow`,`jenis_kelamin_ow`,`alamat_ow`,`no_telepon_ow`) values 
 ('OW01','101020201234','Afrizal','L','Jalan Setiabudi','081256123434'),
 ('OW02','101020201235','Risa','P','Jalan Geger Kalong','089656123443'),
 ('OW03','101020201245','Sarah','P','Jalan Dipatiukur','0896');
+
+/*Table structure for table `tbl_pegawai` */
+
+DROP TABLE IF EXISTS `tbl_pegawai`;
+
+CREATE TABLE `tbl_pegawai` (
+  `id_pegawai` char(9) NOT NULL,
+  `no_ktp_p` char(128) NOT NULL,
+  `nama_depan_p` varchar(15) NOT NULL,
+  `nama_belakang_p` varchar(15) DEFAULT NULL,
+  `jenis_kelamin_p` enum('L','P') DEFAULT NULL,
+  `alamat_p` varchar(30) DEFAULT NULL,
+  `tanggal_lahir_p` date DEFAULT NULL,
+  `no_telepon_p` varchar(13) DEFAULT NULL,
+  `username` varchar(15) DEFAULT NULL,
+  `password` varchar(15) DEFAULT NULL,
+  `tanggal_join_p` date DEFAULT NULL,
+  PRIMARY KEY (`id_pegawai`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_pegawai` */
 
@@ -170,13 +334,48 @@ insert  into `tbl_pegawai`(`id_pegawai`,`no_ktp_p`,`nama_depan_p`,`nama_belakang
 ('PG002','101020201288','Dira','Sukma','L','Jalan Bogor','1997-05-06','081256565640','sukma25','petugas','2015-05-08'),
 ('PG003','222222222222222','Sari ','Ardisa','P','jalan Dago','1998-01-10','0896','Sari46','petugas','2018-01-02');
 
+/*Table structure for table `tbl_pembayaran` */
+
+DROP TABLE IF EXISTS `tbl_pembayaran`;
+
+CREATE TABLE `tbl_pembayaran` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `id_pembayaran` tinyint(4) NOT NULL DEFAULT '1',
+  `jenis_pembayaran` enum('PELUNASAN','DENDA') NOT NULL,
+  `jumlah` double NOT NULL,
+  `tglpembayaran` datetime NOT NULL,
+  `keterangan` text,
+  PRIMARY KEY (`no_transaksi`,`id_pembayaran`),
+  CONSTRAINT `tbl_pembayaran_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Data for the table `tbl_pembayaran` */
 
 insert  into `tbl_pembayaran`(`no_transaksi`,`id_pembayaran`,`jenis_pembayaran`,`jumlah`,`tglpembayaran`,`keterangan`) values 
 ('TRX0000001',1,'PELUNASAN',225000,'2018-01-15 09:03:41','Pelunasan kode_transaksi=TRX0000001 Nama Kostumer=Rendy Gilang'),
 ('TRX0000002',1,'PELUNASAN',360000,'2018-01-15 09:08:53','Pelunasan kode_transaksi=TRX0000002 Nama Kostumer=Hannah Melody');
 
+/*Table structure for table `tbl_pengembalian` */
+
+DROP TABLE IF EXISTS `tbl_pengembalian`;
+
+CREATE TABLE `tbl_pengembalian` (
+  `no_transaksi` varchar(15) NOT NULL,
+  PRIMARY KEY (`no_transaksi`),
+  CONSTRAINT `tbl_pengembalian_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Data for the table `tbl_pengembalian` */
+
+/*Table structure for table `tbl_produsen_mobil` */
+
+DROP TABLE IF EXISTS `tbl_produsen_mobil`;
+
+CREATE TABLE `tbl_produsen_mobil` (
+  `id_produsen_mobil` char(8) NOT NULL,
+  `nama_produsen` varchar(20) NOT NULL,
+  PRIMARY KEY (`id_produsen_mobil`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_produsen_mobil` */
 
