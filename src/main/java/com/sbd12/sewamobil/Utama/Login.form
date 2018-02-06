@@ -84,6 +84,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="tf_username">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Mira54"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
@@ -94,6 +97,9 @@
       </Events>
     </Component>
     <Component class="javax.swing.JPasswordField" name="tf_password">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="petugas"/>
+      </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>

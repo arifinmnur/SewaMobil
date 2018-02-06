@@ -6,8 +6,6 @@
 package com.sbd12.sewamobil.Pkg_Data_Mobil;
 
 import com.sbd12.sewamobil.Pkg_Data_Pegawai.Pegawai;
-import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobil;
-import com.sbd12.sewamobil.Pkg_Owner_Mobil.OwnerMobil;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -39,19 +37,17 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
     @Autowired
     private JdbcTemplate jdbcTemplateObject;
 
-    private final String SQL_TAMPIL_DATA_MOBIL = "SELECT mm.*,pm.nama_mobil,pms.`nama_produsen`,jmm.nama_jenis,jm.nama_ow,jm.`no_telepon_ow`,jmm.harga "
-            + " FROM tbl_data_mobil        AS mm "
-            + " INNER JOIN tbl_merk_mobil        AS PM   ON mm.id_merk_mobil=pm.id_merk_mobil"
-            + " INNER JOIN `tbl_produsen_mobil` AS pms ON pm.`id_produsen_mobil`=pms.`id_produsen_mobil`"
-            + " INNER JOIN tbl_owner_mobil       AS jm   ON mm.id_owner=jm.id_owner"
-            + " INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil";
+    private final String SQL_TAMPIL_DATA_MOBIL = "select mm.*,pm.nama_mobil,jm.nama_ow,jmm.nama_jenis,jmm.harga "
+            + " FROM tbl_data_mobil        AS mm  "
+            + " INNER JOIN tbl_merk_mobil        AS PM   ON mm.id_merk_mobil=pm.id_merk_mobil "
+            + " INNER JOIN tbl_owner_mobil       AS jm   ON mm.id_owner=jm.id_owner "
+            + " INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil ";
 
     private final String SQL_TAMPIL_DATA_MOBIL_BERDASAR_WHERE = SQL_TAMPIL_DATA_MOBIL
             + " WHERE mm.no_pol LIKE ? "
             + " OR pm.nama_mobil LIKE ? "
             + " OR jm.nama_ow LIKE ? "
             + " OR jmm.nama_jenis LIKE ?";
-    private final String QUERY_PILIH_CARI=SQL_TAMPIL_DATA_MOBIL+" WHERE no_pol=?";
 
     @Autowired
     @Override
@@ -91,15 +87,7 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
         return data_mobil;
     }
     
-    public DataMobil pilih_data(String kode) {
-        List<DataMobil> dataMobils = jdbcTemplateObject.query(QUERY_PILIH_CARI, new DataMobilMapper(), kode);
-        
-        if (!dataMobils.isEmpty()) {
-            return dataMobils.get(0);
-        } else {
-            return null;
-        }
-    }
+    
 
     @Override
     public List<DataMobil> pilih_data_like(String kode) {
@@ -155,23 +143,10 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
             dataMobil.setNama_mobil(rs.getString("nama_mobil"));
             dataMobil.setNamaow(rs.getString("nama_ow"));
             dataMobil.setHarga_perhari(rs.getDouble("harga"));
-            
-            MerkMobil merkMobil = new MerkMobil();
-            merkMobil.setId_merk_mobil(rs.getString("id_merk_mobil"));
-            merkMobil.setNama_Merk_Mobil(rs.getString("nama_mobil"));
-            merkMobil.setNama_produsen_mobil(rs.getString("nama_produsen"));
-            merkMobil.setNama_jenis(rs.getString("nama_jenis"));
-            
-            OwnerMobil ownerMobil = new OwnerMobil();
-            ownerMobil.setId_owner(rs.getString("id_owner"));
-            ownerMobil.setNama_ow(rs.getString("nama_ow"));
-            ownerMobil.setNo_telepon_ow(rs.getString("no_telepon_ow"));
-            
-            dataMobil.setMerkMobil(merkMobil);
-            dataMobil.setOwnerMobil(ownerMobil);
+
             return dataMobil;
         }
-        
+
     }
 
     public class DataMobilDetailMapper implements RowMapper<DataMobil> {
@@ -193,8 +168,6 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
             dataMobil.setTglkembali(tglkembali);
             dataMobil.setDenda(rs.getDouble("denda"));
             dataMobil.setStatus(rs.getString("catatan"));
-            
-           
 
             return dataMobil;
         }

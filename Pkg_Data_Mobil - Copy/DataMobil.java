@@ -5,8 +5,6 @@
  */
 package com.sbd12.sewamobil.Pkg_Data_Mobil;
 
-import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobil;
-import com.sbd12.sewamobil.Pkg_Owner_Mobil.OwnerMobil;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,27 +29,6 @@ public class DataMobil {
     private java.sql.Timestamp tglkembali;
     private double denda = 0.0;
     private String status;
-    
-    private MerkMobil merkMobil;
-    private OwnerMobil ownerMobil;
-
-    public MerkMobil getMerkMobil() {
-        return merkMobil;
-    }
-
-    public void setMerkMobil(MerkMobil merkMobil) {
-        this.merkMobil = merkMobil;
-    }
-
-    public OwnerMobil getOwnerMobil() {
-        return ownerMobil;
-    }
-
-    public void setOwnerMobil(OwnerMobil ownerMobil) {
-        this.ownerMobil = ownerMobil;
-    }
-    
-    
 
     public double getDenda() {
         return denda;

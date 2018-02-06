@@ -36,15 +36,26 @@ public class PegawaiTableModel extends AbstractTableModel{
 
     @Override
     public Object getValueAt(int baris, int kolom) {
-        
-        Pegawai pg=data.get(baris);
-        switch(kolom)
-        {
-            case 0: return pg.getId_pegawai();
-            case 1: return pg.getNo_ktp_p();
-            case 2: return pg.getNama_lengkap_p();
-            case 3: return pg.getJenis_kelamin_p();
-            case 4: return pg.getAlamat_p();
+        String jenisKelamin;
+        Pegawai pg = data.get(baris);
+        switch (kolom) {
+            case 0:
+                return pg.getId_pegawai();
+            case 1:
+                return pg.getNo_ktp_p();
+            case 2:
+                return pg.getNama_lengkap_p();
+            case 3:
+                jenisKelamin = pg.getJenis_kelamin_p();
+                if (jenisKelamin.equalsIgnoreCase("L")) {
+                    return "Laki-laki";
+                } else if (jenisKelamin.equalsIgnoreCase("P")) {
+                    return "Perempuan";
+                } else {
+                    return "null";
+                }
+            case 4:
+                return pg.getAlamat_p();
             case 5: return pg.getNo_telepon_p();
             case 6: return pg.getUsername();
             case 7: return pg.getPassword();

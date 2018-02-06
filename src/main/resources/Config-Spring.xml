@@ -44,5 +44,6 @@
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Jenis_Mobil"/>
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Data_Pegawai"/>
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Kostumer"/>
+    <context:component-scan base-package="com.sbd12.sewamobil.Pkg_Owner_Mobil"/>
     <context:component-scan base-package="com.sbd12.sewamobil.Pkg_data_transaksi"/>
 </beans>

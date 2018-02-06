@@ -66,12 +66,16 @@ public class Login extends javax.swing.JFrame {
 
         jLabel2.setText("Password");
 
+        tf_username.setText("Mira54");
+
         jButton1.setText("Login");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        tf_password.setText("petugas");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);

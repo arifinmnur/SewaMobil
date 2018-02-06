@@ -240,7 +240,6 @@ public class FD_Barang extends javax.swing.JDialog {
         } else {
             for (int i = 0; i < selectedrows.length; i++) {
 
-                //System.out.println(jTable.getValueAt(selectedrows[i], 0).toString());
                 String kode = tableDataMobil.getValueAt(selectedrows[i], 0).toString();
                 String nama = tableDataMobil.getValueAt(selectedrows[i], 1).toString();
                 this.harga_total += (Double) tableDataMobil.getValueAt(selectedrows[i], 3);

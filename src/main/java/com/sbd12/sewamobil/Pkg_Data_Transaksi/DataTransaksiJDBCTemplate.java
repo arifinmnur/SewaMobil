@@ -74,7 +74,17 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
             + " DATEDIFF(tglkembali,tglpinjam)+1 as lamaPinjam"
             + " FROM tbl_data_transaksi AS DT "
             + " INNER JOIN tbl_pegawai AS PG ON dt.id_pegawai=pg.id_pegawai "
-            + " INNER JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer";
+            + " INNER JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer ";
+    
+    private final String QUERY_PILIH_SEMUA_PENGEMBALIAN = " SELECT dtp.*,"
+            + " CONCAT(kt.nama_depan_k,' ',kt.nama_belakang_k) AS nama_kostumer,"
+            + " CONCAT(pg.nama_depan_p,' ',pg.nama_belakang_p) AS nama_petugas, "
+            + " DATEDIFF(dtp.tglpengembalian,dt.tglkembali) AS Telat,"
+            + " dt.`tglkembali` AS tglkembali_seharusnya"
+            + " FROM tbl_pengembalian AS dtp"
+            + " INNER JOIN tbl_data_transaksi AS dt ON dt.no_transaksi=dtp.no_transaksi"
+            + " INNER JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer"
+            + " INNER JOIN tbl_pegawai AS PG ON dtp.id_pegawai=pg.id_pegawai";
 
     private final String QUERY_PILIH_CARI = QUERY_PILIH_SEMUA + " WHERE dt.no_transaksi=?";
     private final String QUERY_PILIH_LIKE = QUERY_PILIH_SEMUA + " WHERE kt.nama_k like ?";
@@ -169,6 +179,30 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
         System.out.println("Masuk fungsi update");
         return;
     }
+    
+    public void create_pengembalian(String no_transaksi, String id_pegawai, double denda) {
+        String SQL = "INSERT INTO tbl_pengembalian (no_transaksi,id_pegawai,denda,tglpengembalian) values (?,?,?,now())";
+
+        jdbcTemplateObject.update(SQL, no_transaksi, id_pegawai,denda);
+        System.out.println("Masuk fungsi update");
+        return;
+    }
+    
+    public void update_transaksi_selesai(String no_transaksi)
+    {
+        String SQL_UPDATE_TRANSAKSI_SELESAI="UPDATE tbl_data_Transaksi SET status='SELESAI' WHERE no_transaksi=?";
+        jdbcTemplateObject.update(SQL_UPDATE_TRANSAKSI_SELESAI, no_transaksi);
+
+        return;
+    }
+    
+    public void update_detail_transaksi(String no_transaksi, String id_petugas, double denda, String catatan)
+    {
+        String SQL_UPDATE_DETAIL_TRANSAKSI="UPDATE detail_transaksi SET id_petugas_pengembalian=?, tglkembali=now(), denda=? ,catatan=? WHERE no_transaksi=?";
+        jdbcTemplateObject.update(SQL_UPDATE_DETAIL_TRANSAKSI,id_petugas,denda,catatan, no_transaksi);
+
+        return;
+    }
 
     @Override
     public void tambah_detail_transaksi(String noTransaksi, ArrayList<String> list) {
@@ -186,6 +220,18 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
         List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_SEMUA + " ORDER BY dt.no_transaksi ASC", new DataTransaksiMapper());
         return dataTransaksis;
     }
+    
+    public List<DataTransaksi> listSemua_belum_selesai() {
+
+        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_SEMUA + " WHERE dt.status='BELUM SELESAI' ORDER BY dt.no_transaksi ASC", new DataTransaksiMapper());
+        return dataTransaksis;
+    }
+    
+    public List<DataPengembalian> listSemua_pengembalian() {
+
+        List<DataPengembalian> dataPengembalians = jdbcTemplateObject.query(QUERY_PILIH_SEMUA_PENGEMBALIAN + " ORDER BY dtp.tglpengembalian ASC", new DataPengembalianMapper());
+        return dataPengembalians;
+    }
 
     public DataTransaksi pilih_data(String kode) {
 
@@ -196,12 +242,23 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
             return null;
         }
     }
+    
+     public DataPengembalian pilih_data_pengembalian(String kode) {
+
+        List<DataPengembalian> dataPengembalians = jdbcTemplateObject.query(QUERY_PILIH_SEMUA_PENGEMBALIAN + " WHERE dtp.no_transaksi=?", new DataPengembalianMapper(), kode);
+        if (!dataPengembalians.isEmpty()) {
+            return dataPengembalians.get(0);
+        } else {
+            return null;
+        }
+    }
 
     public List<DataTransaksi> pilih_data_like(String kode) {
 
         List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new DataTransaksiMapper(), "%" + kode + "%");
         return dataTransaksis;
     }
+    
 
     @Override
     public DataTransaksi getId(Integer id) {
@@ -371,6 +428,14 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
         jdbcTemplateObject.update(SQL, id);
         return;
     }
+    
+    public void delete_pengembalian(String id) {
+        String SQL = "DELETE FROM tbl_pengembalian WHERE no_transaksi = ?";
+        jdbcTemplateObject.update(SQL, id);
+        return;
+    }
+    
+    
 
     @Override
     public double ambil_selected_harga(ArrayList<String> selectedItems) throws ClassNotFoundException {
@@ -401,6 +466,32 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
             dataTransaksi.setStatus(rs.getString("status"));
 
             return dataTransaksi;
+        }
+    }
+    
+    public class DataPengembalianMapper implements RowMapper<DataPengembalian> {
+
+        @Override
+        public DataPengembalian mapRow(ResultSet rs, int rowNum) throws SQLException {
+            DataPengembalian dataPengembalian = new DataPengembalian();
+            dataPengembalian.setNo_transaksi(rs.getString("no_transaksi"));
+            dataPengembalian.setId_pegawai(rs.getString("id_pegawai"));
+            dataPengembalian.setDenda(rs.getDouble("denda"));
+            dataPengembalian.setTglpengembalian(rs.getTimestamp("tglpengembalian"));
+            dataPengembalian.setNama_kostumer(rs.getString("nama_kostumer"));
+            dataPengembalian.setNama_pegawai(rs.getString("nama_petugas"));
+            
+            if(rs.getInt("telat")<0)
+            {
+                dataPengembalian.setTelat(0);
+            }
+            else
+            {
+                dataPengembalian.setTelat(rs.getInt("telat"));
+            }
+            dataPengembalian.setTglkembali_seharusnya(rs.getDate("tglkembali_seharusnya"));
+
+            return dataPengembalian;
         }
     }
 }

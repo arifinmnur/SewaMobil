@@ -37,7 +37,7 @@ public class KostumerTableModel extends AbstractTableModel {
 
         @Override
         public Object getValueAt(int baris, int kolom) {
-
+            String jenisKelamin;
             Kostumer kst = data.get(baris);
             switch (kolom) {
                 case 0:
@@ -49,7 +49,14 @@ public class KostumerTableModel extends AbstractTableModel {
                 case 3:
                     return kst.getUmur();
                 case 4:
-                    return kst.getJenis_kelamin_k();
+                    jenisKelamin = kst.getJenis_kelamin_k();
+                    if (jenisKelamin.equalsIgnoreCase("L")) {
+                        return "Laki-laki";
+                    } else if (jenisKelamin.equalsIgnoreCase("P")) {
+                        return "Perempuan";
+                    } else {
+                        return "null";
+                    }
                 case 5:
                     return kst.getNo_telepon_k();
                 default:

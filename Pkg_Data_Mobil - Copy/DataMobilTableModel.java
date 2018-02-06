@@ -38,12 +38,11 @@ public class DataMobilTableModel extends AbstractTableModel{
         switch(kolom)
         {
             case 0: return kst.getNo_pol();
-            case 1: return kst.getMerkMobil().getNama_Merk_Mobil();
-            case 2: return kst.getOwnerMobil().getNama_ow();
+            case 1: return kst.getNama_mobil();
+            case 2: return kst.getNama_ow();
             case 3: return kst.getHarga_perhari();
             default : return null;
         }
-        
     }
     @Override
     public String getColumnName(int column)

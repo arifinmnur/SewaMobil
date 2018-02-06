@@ -20,32 +20,22 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author ArieDZ
  */
-public class DataTransaksiTableModel extends AbstractTableModel{
-    private List<DataTransaksi> data;
+public class DataPengembalianTableModel extends AbstractTableModel{
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+    private List<DataPengembalian> data;
     private DecimalFormat kursIndonesia;
     private DecimalFormatSymbols formatRp;
     
-    public void formatCurrency() {
-        kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-        formatRp = new DecimalFormatSymbols();
-        formatRp.setCurrencySymbol("Rp. ");
-        formatRp.setMonetaryDecimalSeparator(',');
-        formatRp.setGroupingSeparator('.');
-
-        kursIndonesia.setDecimalFormatSymbols(formatRp);
-    }
-    
     private String[] nameField={
         "No Transaksi",
-        "Nama Kostumer",
-        "Nama Pegawawai",
-        "Pinjam",
-        "Kembali",
-        "Harga Total",
-        "Status"};
+        "Kostumer",
+        "Pegawai Pengembalian",
+        "Perkiraan Kembali",
+        "Tgl Pengembalian",
+        "Telat",
+        "Denda"};
     
-    public void setData(List<DataTransaksi> data)
+    public void setData(List<DataPengembalian> data)
     {
         this.data=data;
     }
@@ -62,25 +52,17 @@ public class DataTransaksiTableModel extends AbstractTableModel{
     @Override
     public Object getValueAt(int baris, int kolom) {
         formatCurrency();
-        DataTransaksi kst=data.get(baris);
+        DataPengembalian kst=data.get(baris);
         switch(kolom)
         {
-            /*case 0: return kst.getNo_transaksi();
-            case 1: return kst.getNama_kostumer();
-            case 2: return kst.getNama_pegawai();
-            case 3: return kst.getNo_pol();
-            case 4: return kst.getNama_mobil();
-            case 5: return kst.getTglpinjam();
-            case 6: return kst.getTglkembali();
-            case 7: return kst.getHarga_total();*/
             
             case 0: return kst.getNo_transaksi();
             case 1: return kst.getNama_kostumer();
             case 2: return kst.getNama_pegawai();
-            case 3: return sdf.format(kst.getTglpinjam());
-            case 4: return sdf.format(kst.getTglkembali());
-            case 5: return kursIndonesia.format(kst.getHarga_total());
-            case 6: return kst.getStatus();
+            case 3: return sdf.format(kst.getTglkembali_seharusnya());
+            case 4: return kst.getTglPengembalianString();
+            case 5: return kst.getTelat()+"Hari";
+            case 6: return kursIndonesia.format(kst.getDenda());
             default : return null;
         }
     }
@@ -90,5 +72,14 @@ public class DataTransaksiTableModel extends AbstractTableModel{
         return nameField[column];
     }
 
-    
+    public void formatCurrency() {
+        kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        formatRp = new DecimalFormatSymbols();
+        formatRp.setCurrencySymbol("Rp. ");
+        formatRp.setMonetaryDecimalSeparator(',');
+        formatRp.setGroupingSeparator('.');
+
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+    }
+
 }

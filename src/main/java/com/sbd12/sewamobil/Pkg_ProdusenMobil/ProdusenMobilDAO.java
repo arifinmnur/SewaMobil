@@ -28,7 +28,8 @@ public interface ProdusenMobilDAO {
      * @param name
      * @param age
    */
-   public void create(String name, Integer age);
+   public void create(String id_prod,String nama_prod);
+   public void edit(String id_prod,String nama_prod, String old_id_prod);
    public ProdusenMobil getId(Integer id);
    
    /** 

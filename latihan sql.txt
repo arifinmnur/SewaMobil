@@ -21,3 +21,25 @@ SELECT mm.*,pm.nama_mobil,jm.nama_ow,jmm.nama_jenis,jmm.harga
  INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil
  
  WHERE mm.`no_pol` NOT IN (SELECT no_pol FROM detail_transaksi WHERE tglkembali IS NULL)
+
+-----------------------------------------------
+
+ SELECT mm.*,pm.nama_mobil,pmm.nama_produsen,jm.nama_ow,jmm.nama_jenis,jmm.harga 
+ FROM tbl_data_mobil        AS mm  
+ INNER JOIN tbl_merk_mobil        AS PM   ON mm.id_merk_mobil=pm.id_merk_mobil 
+ INNER JOIN tbl_produsen_mobil AS pmm ON pmm.id_produsen_mobil=pm.`id_produsen_mobil`
+ INNER JOIN tbl_owner_mobil       AS jm   ON mm.id_owner=jm.id_owner 
+ INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil
+ 
+ WHERE mm.`no_pol` NOT IN 	(SELECT dtx.no_pol 
+				FROM tbl_data_transaksi AS dt 
+				INNER JOIN detail_transaksi AS dtx ON dtx.`no_transaksi`=dt.`no_transaksi`
+				WHERE dt.tglpinjam >='2018-01-18' AND dt.`tglkembali`<='2018-01-18')
+				
+ORDER BY (pmm.nama_produsen),(jmm.`nama_jenis`),(mm.`no_pol`)
+
+
+
+SELECT MAX(CAST(CONV(SUBSTRING(id_merk_mobil,4,2),16,10)AS INT)) AS maks FROM  tbl_merk_mobil
+WHERE id_merk_mobil LIKE 'tyt%'
+				

@@ -46,6 +46,8 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
     private final String QUERY_PILIH_CARI = QUERY_PILIH_SEMUA + " where id_pegawai=?";
     private final String QUERY_LOGIN = QUERY_PILIH_SEMUA + " WHERE username=? AND password=?";
     private final String QUERY_PILIH_LIKE = QUERY_PILIH_SEMUA + " where nama_p like ?";
+    private final String SQL_TAMBAH = "insert into tbl_pegawai ( id_pegawai, no_ktp_p, nama_depan_p,nama_belakang_p,jenis_kelamin_p,alamat_p, tanggal_lahir_p,no_telepon_p,username,password,tanggal_join_p) values (?,?,?,?,?,?,?,?,?,?,?)";
+
 
     @Override
     public void create(
@@ -61,9 +63,8 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
             String password,
             java.sql.Date tanggal_join) {
 
-        String SQL = "insert into tbl_pegawai ( id_pegawai, no_ktp_p, nama_depan_p,nama_belakang_p,jenis_kelamin_p,alamat_p, tanggal_lahir_p,no_telepon_p,username,password,tanggal_join_p) values (?,?,?,?,?,?,?,?,?,?,?)";
-
-        jdbcTemplateObject.update(SQL, id_pegawai, no_ktp_p, nama_depan_p, nama_belakang_p, jenis_kelamin_p, alamat_p, tanggal_lahir_p, no_telepon_p, username, password, tanggal_join);
+        
+        jdbcTemplateObject.update(SQL_TAMBAH, id_pegawai, no_ktp_p, nama_depan_p, nama_belakang_p, jenis_kelamin_p, alamat_p, tanggal_lahir_p, no_telepon_p, username, password, tanggal_join);
         System.out.println("Masuk fungsi update");
         return;
     }
@@ -103,6 +104,7 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
                 break;
             case 2:
                 maxS = "PG0" + maxS;
+                break;
             default:
                 maxS = "PG" + maxS;
                 break;

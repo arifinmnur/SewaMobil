@@ -15,7 +15,7 @@ package com.sbd12.sewamobil.Pkg_Jenis_Mobil;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
-interface JenisMobilDA0 {
+interface JenisMobilDAO {
 
 
 
@@ -32,7 +32,8 @@ interface JenisMobilDA0 {
      * @param name
      * @param age
    */
-   public void create(String name, Integer age);
+   public void create(String Id_jenis_mobil, String Nama_jenis_mobil, double Harga_mobil);
+   public void edit(String id_jenis_mobil, String nama_jenis_mobil, double harga_mobil,String old_Id_jenis_mobil);
    public JenisMobil getId(Integer id);
    
    /** 
