@@ -9,13 +9,10 @@ package com.sbd12.sewamobil.Pkg_Kostumer;
  *
  * @author ArieDZ_2
  */
-import com.sbd12.sewamobil.Pkg_Jenis_Mobil.JenisMobil;
-import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobil;
+import com.sbd12.sewamobil.Pkg_Jenis_Member_dan_Diskon.JenisMember;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.sql.DataSource;
 import javax.swing.JComboBox;
-import org.springframework.stereotype.Repository;
 
 public interface KostumerDAO {
 
@@ -60,8 +57,8 @@ public interface KostumerDAO {
 
     public Kostumer getId(Integer id_kostumer);
 
-    public List<Jenis_Member> combo_box_jenis_member(JComboBox Combo);
-    public Jenis_Member pilih_data_jenis_member(String kode);
+    public List<JenisMember> combo_box_jenis_member(JComboBox Combo);
+    public JenisMember pilih_data_jenis_member(String kode);
 
     /**
      * This is the method to be used to list down all the records from the

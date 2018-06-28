@@ -13,7 +13,7 @@ public class JenisMobil {
    
    private String id_jenis_mobil;
    private String nama_jenis_mobil;
-   private String harga_mobil;
+   private double harga_mobil;
   
 
    public void setId_jenis_mobil(String id) {
@@ -28,10 +28,10 @@ public class JenisMobil {
    public String getNama_jenis_mobil() {
       return nama_jenis_mobil;
    }
-public void setHarga_mobil(String harga) {
+public void setHarga_mobil(double harga) {
       this.harga_mobil = harga;
    }
-   public String getHarga_mobil() {
+   public double getHarga_mobil() {
       return harga_mobil;
    }
    

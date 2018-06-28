@@ -9,11 +9,14 @@ package com.sbd12.sewamobil.Pkg_Data_Transaksi;
  *
  * @author ArieDZ_2
  */
+import com.sbd12.sewamobil.Pkg_Data_Pengembalian.DataPengembalian;
 import com.sbd12.sewamobil.Pkg_Data_Mobil.DataMobil;
 import com.sbd12.sewamobil.Pkg_Data_Pegawai.Pegawai;
+import com.sbd12.sewamobil.Pkg_Data_Pembayaran.DataPembayaran;
 import com.sbd12.sewamobil.Pkg_Jenis_Mobil.JenisMobil;
 import com.sbd12.sewamobil.Pkg_Merk_Mobil.MerkMobil;
 import com.sbd12.sewamobil.Pkg_ProdusenMobil.ProdusenMobil;
+import java.sql.Connection;
 import java.sql.Date;
 
 import java.sql.ResultSet;
@@ -24,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static javafx.scene.input.KeyCode.T;
 import javax.sql.DataSource;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -50,15 +55,60 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
         this.dataSource = dataSource;
         this.jdbcTemplateObject = new JdbcTemplate(dataSource);
     }
-    
+
+    public Connection getConnection() throws SQLException {
+        return jdbcTemplateObject.getDataSource().getConnection();
+    }
+
+    @Value("${jdbc.database}")
+    private String database;
+    @Value("${jdbc.driverClassName}")
+    private String driverClassName;
+    @Value("${jdbc.host}")
+    private String host;
+    @Value("${jdbc.password}")
+    private String password;
+    @Value("${jdbc.port}")
+    private String port;
     @Value("${jdbc.url}")
     private String jdbcurl;
+    @Value("${jdbc.username}")
+    private String username;
+    @Value("${mysql.dir}")
+    private String mysql_dir;
+
+    public String getMysql_dir() {
+        return mysql_dir;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     public String getJdbcurl() {
         return jdbcurl;
     }
-    
-    
+
     /*private final String QUERY_PILIH_SEMUA = "SELECT dt.*,mm.nama_mobil,pg.nama_p,kt.nama_k,pm.*,jm.harga "
             + "FROM tbl_data_transaksi AS DT "
             + "JOIN tbl_data_mobil AS DM ON dt.no_pol=dm.no_pol "
@@ -67,17 +117,32 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
             + "JOIN tbl_pegawai AS PG ON dt.id_pegawai=pg.id_pegawai "
             + "JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer "
             + "JOIN tbl_jenis_mobil AS jm ON mm.id_jenis_mobil=jm.id_jenis_mobil";*/
-
     private final String QUERY_PILIH_SEMUA = " SELECT dt.*,(dt.harga_sebelum_diskon-dt.harga_diskon) as harga_total,"
             + " CONCAT(kt.nama_depan_k,' ',kt.nama_belakang_k) as nama_kostumer, "
             + " CONCAT(pg.nama_depan_p,' ',pg.nama_belakang_p) as nama_petugas, "
             + " DATEDIFF(tglkembali,tglpinjam)+1 as lamaPinjam"
             + " FROM tbl_data_transaksi AS DT "
             + " INNER JOIN tbl_pegawai AS PG ON dt.id_pegawai=pg.id_pegawai "
-            + " INNER JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer";
+            + " INNER JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer ";
+
+    private final String QUERY_PILIH_SEMUA_PENGEMBALIAN = " SELECT dtp.*,"
+            + " CONCAT(kt.nama_depan_k,' ',kt.nama_belakang_k) AS nama_kostumer,"
+            + " CONCAT(pg.nama_depan_p,' ',pg.nama_belakang_p) AS nama_petugas, "
+            + " DATEDIFF(dtp.tglpengembalian,dt.tglkembali) AS Telat,"
+            + " dt.`tglkembali` AS tglkembali_seharusnya"
+            + " FROM tbl_pengembalian AS dtp"
+            + " INNER JOIN tbl_data_transaksi AS dt ON dt.no_transaksi=dtp.no_transaksi"
+            + " INNER JOIN tbl_kostumer AS KT ON dt.id_kostumer=kt.id_kostumer"
+            + " INNER JOIN tbl_pegawai AS PG ON dtp.id_pegawai=pg.id_pegawai";
+    private final String QUERY_PILIH_SEMUA_PEMBAYARAN = " SELECT * FROM tbl_pembayaran ORDER BY tglpembayaran ASC";
 
     private final String QUERY_PILIH_CARI = QUERY_PILIH_SEMUA + " WHERE dt.no_transaksi=?";
     private final String QUERY_PILIH_LIKE = QUERY_PILIH_SEMUA + " WHERE kt.nama_k like ?";
+    private final String SQL_CREATE = "INSERT INTO tbl_data_transaksi (no_transaksi, id_kostumer, id_pegawai,tglpinjam,tglkembali,harga_sebelum_diskon,harga_diskon,tgltransaksi,status) values (?,?,?,?,ADDDATE(tglpinjam,?),?,?,now(),?)";
+    private final String SQL_CREATE_PENGEMBALIAN = "INSERT INTO tbl_pengembalian (no_transaksi,id_pegawai,denda,tglpengembalian) values (?,?,?,now())";
+    private final String SQL_UPDATE_TRANSAKSI_SELESAI = "UPDATE tbl_data_Transaksi SET status='SELESAI' WHERE no_transaksi=?";
+    private final String SQL_UPDATE_DETAIL_TRANSAKSI = "UPDATE detail_transaksi SET id_petugas_pengembalian=?, tglkembali=now(), denda=? ,catatan=? WHERE no_transaksi=?";
+    private final String SQL_TAMBAH_DETAIL_TRANSAKSI = "INSERT INTO detail_transaksi ( no_transaksi, no_pol) VALUES (?, ?)";
 
     @Override
     public void tambah_pembayaran(String kode_transaksi, String jenis_pembayaran, double nominal, String keterangan) {
@@ -97,10 +162,10 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
                 }
                 return null;
             }
-        },kode_transaksi);
+        }, kode_transaksi);
         maksInts = maksInt.get() + 1;
 
-        jdbcTemplateObject.update(SQL_TAMBAH_PEMBAYARAN, kode_transaksi, maksInts, jenis_pembayaran,nominal ,keterangan);
+        jdbcTemplateObject.update(SQL_TAMBAH_PEMBAYARAN, kode_transaksi, maksInts, jenis_pembayaran, nominal, keterangan);
         System.out.println("Masuk Fungsi 'tambah_pembayaran' dgn koode_transaksi=" + kode_transaksi + ", id_pembayaran=" + maksInts);
     }
 
@@ -163,33 +228,131 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
 
     @Override
     public void create(String no_transaksi, String id_kostumer, String id_pegawai, Date tglpinjam, int lamaPinjam, double harga, double harga_diskon, String status) {
-        String SQL = "INSERT INTO tbl_data_transaksi (no_transaksi, id_kostumer, id_pegawai,tglpinjam,tglkembali,harga_sebelum_diskon,harga_diskon,tgltransaksi,status) values (?,?,?,?,ADDDATE(tglpinjam,?),?,?,now(),?)";
+        try {
 
-        jdbcTemplateObject.update(SQL, no_transaksi, id_kostumer, id_pegawai, tglpinjam, lamaPinjam, harga, harga_diskon, status);
+            jdbcTemplateObject.update(SQL_CREATE, no_transaksi, id_kostumer, id_pegawai, tglpinjam, lamaPinjam, harga, harga_diskon, status);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
         System.out.println("Masuk fungsi update");
         return;
     }
 
     @Override
+    public void create_pengembalian(String no_transaksi, String id_pegawai, double denda) {
+        try {
+            jdbcTemplateObject.update(SQL_CREATE_PENGEMBALIAN, no_transaksi, id_pegawai, denda);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
+
+        System.out.println("Masuk fungsi update");
+        return;
+    }
+
+    @Override
+    public void update_transaksi_selesai(String no_transaksi) {
+        try {
+            jdbcTemplateObject.update(SQL_UPDATE_TRANSAKSI_SELESAI, no_transaksi);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
+
+        return;
+    }
+
+    public void update_detail_transaksi(String no_transaksi, String id_petugas, double denda, String catatan) {
+        try {
+            jdbcTemplateObject.update(SQL_UPDATE_DETAIL_TRANSAKSI, id_petugas, denda, catatan, no_transaksi);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
+
+        return;
+    }
+
+    @Override
     public void tambah_detail_transaksi(String noTransaksi, ArrayList<String> list) {
-        String SQL = "INSERT INTO detail_transaksi ( no_transaksi, no_pol) VALUES (?, ?)";
-        for (String selectedBarang : list) {
-            jdbcTemplateObject.update(SQL, noTransaksi, selectedBarang);
-            System.out.println("Masuk fungsi update");
+        try {
+            for (String selectedBarang : list) {
+                jdbcTemplateObject.update(SQL_TAMBAH_DETAIL_TRANSAKSI, noTransaksi, selectedBarang);
+                System.out.println("Masuk fungsi update");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
         }
         return;
     }
 
     @Override
     public List<DataTransaksi> listSemua() {
+        List<DataTransaksi> dataTransaksis = null;
+        try {
 
-        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_SEMUA + " ORDER BY dt.no_transaksi ASC", new DataTransaksiMapper());
+            dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_SEMUA + " ORDER BY dt.no_transaksi ASC", new DataTransaksiMapper());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         return dataTransaksis;
     }
 
-    public DataTransaksi pilih_data(String kode) {
+    @Override
+    public List<DataTransaksi> listSemua_belum_selesai() {
+        List<DataTransaksi> dataTransaksis = null;
+        try {
+            dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_SEMUA + " WHERE dt.status='BELUM SELESAI' ORDER BY dt.no_transaksi ASC", new DataTransaksiMapper());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
 
-        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_CARI, new DataTransaksiMapper(), kode);
+        return dataTransaksis;
+    }
+
+    @Override
+    public List<DataPengembalian> listSemua_pengembalian() {
+        List<DataPengembalian> dataPengembalians = null;
+        try {
+            dataPengembalians = jdbcTemplateObject.query(QUERY_PILIH_SEMUA_PENGEMBALIAN + " ORDER BY dtp.tglpengembalian ASC", new DataPengembalianMapper());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
+
+        return dataPengembalians;
+    }
+
+    @Override
+    public List<DataPembayaran> listSemua_pembayaran() {
+        List<DataPembayaran> dataPembayarans = null;
+        try {
+            dataPembayarans = jdbcTemplateObject.query(QUERY_PILIH_SEMUA_PEMBAYARAN, new DataPembayaranMapper());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
+        return dataPembayarans;
+    }
+
+    @Override
+    public DataTransaksi pilih_data(String kode) {
+        List<DataTransaksi> dataTransaksis = null;
+        try {
+            dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_CARI, new DataTransaksiMapper(), kode);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         if (!dataTransaksis.isEmpty()) {
             return dataTransaksis.get(0);
         } else {
@@ -197,9 +360,34 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
         }
     }
 
-    public List<DataTransaksi> pilih_data_like(String kode) {
+    @Override
+    public DataPengembalian pilih_data_pengembalian(String kode) {
+        List<DataPengembalian> dataPengembalians = null;
+        try {
+            dataPengembalians = jdbcTemplateObject.query(QUERY_PILIH_SEMUA_PENGEMBALIAN + " WHERE dtp.no_transaksi=?", new DataPengembalianMapper(), kode);
 
-        List<DataTransaksi> dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new DataTransaksiMapper(), "%" + kode + "%");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
+        if (!dataPengembalians.isEmpty()) {
+            return dataPengembalians.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<DataTransaksi> pilih_data_like(String kode) {
+        List<DataTransaksi> dataTransaksis = null;
+
+        try {
+            dataTransaksis = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new DataTransaksiMapper(), "%" + kode + "%");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         return dataTransaksis;
     }
 
@@ -341,25 +529,6 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
         return list;
     }
 
-    /*
-    @Override
-    public void delete(String id)
-    {
-        String SQL = "delete from tbl_merk_mobil where id_merk_mobil = ?";
-        jdbcTemplateObject.update(SQL, id);
-        return;
-    }
-    
-     @Override
-    public void edit(String no_transaksi, String id_kostumer, String no_pol, String id_pegawai, Date tglpinjam, Date tglkembali,double hargatotal)
-    {
-      /*  System.out.println("Masuk fungsi update");
-        String SQL="UPDATE tbl_merk_mobil SET id_produsen_mobil=?,id_jenis_mobil=?,nama_mobil=? where id_merk_mobil=?";
-        
-        jdbcTemplateObject.update(SQL,idProd,idJenis,namaMerk,id);
-         
-         return;
-    }*/
     @Override
     public void edit(String no_transaksi, String id_kostumer, String no_pol, String id_pegawai, Date tglpinjam, Date tglkembali, double hargatotal) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -367,8 +536,26 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
 
     @Override
     public void delete(String id) {
-        String SQL = "delete from tbl_data_transaksi where no_transaksi = ?";
-        jdbcTemplateObject.update(SQL, id);
+        try {
+            String SQL = "delete from tbl_data_transaksi where no_transaksi = ?";
+            jdbcTemplateObject.update(SQL, id);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
+
+        return;
+    }
+
+    public void delete_pengembalian(String id) {
+        try {
+            String SQL = "DELETE FROM tbl_pengembalian WHERE no_transaksi = ?";
+            jdbcTemplateObject.update(SQL, id);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
+
         return;
     }
 
@@ -401,6 +588,45 @@ public class DataTransaksiJDBCTemplate implements DataTransaksiDAO {
             dataTransaksi.setStatus(rs.getString("status"));
 
             return dataTransaksi;
+        }
+    }
+
+    public class DataPengembalianMapper implements RowMapper<DataPengembalian> {
+
+        @Override
+        public DataPengembalian mapRow(ResultSet rs, int rowNum) throws SQLException {
+            DataPengembalian dataPengembalian = new DataPengembalian();
+            dataPengembalian.setNo_transaksi(rs.getString("no_transaksi"));
+            dataPengembalian.setId_pegawai(rs.getString("id_pegawai"));
+            dataPengembalian.setDenda(rs.getDouble("denda"));
+            dataPengembalian.setTglpengembalian(rs.getTimestamp("tglpengembalian"));
+            dataPengembalian.setNama_kostumer(rs.getString("nama_kostumer"));
+            dataPengembalian.setNama_pegawai(rs.getString("nama_petugas"));
+
+            if (rs.getInt("telat") < 0) {
+                dataPengembalian.setTelat(0);
+            } else {
+                dataPengembalian.setTelat(rs.getInt("telat"));
+            }
+            dataPengembalian.setTglkembali_seharusnya(rs.getDate("tglkembali_seharusnya"));
+
+            return dataPengembalian;
+        }
+    }
+
+    public class DataPembayaranMapper implements RowMapper<DataPembayaran> {
+
+        @Override
+        public DataPembayaran mapRow(ResultSet rs, int rowNum) throws SQLException {
+            DataPembayaran dataPembayaran = new DataPembayaran();
+            dataPembayaran.setNo_transaksi(rs.getString(1));
+            dataPembayaran.setId_pembayaran(rs.getInt(2));
+            dataPembayaran.setJenis_pembayaran(rs.getString(3));
+            dataPembayaran.setJumlah(rs.getDouble(4));
+            dataPembayaran.setTglpembayaran(rs.getTimestamp(5));
+            dataPembayaran.setKeterangan(rs.getString(6));
+
+            return dataPembayaran;
         }
     }
 }

@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static javafx.scene.input.KeyCode.T;
 import javax.sql.DataSource;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
     private final String QUERY_PILIH_CARI = QUERY_PILIH_SEMUA + " where id_pegawai=?";
     private final String QUERY_LOGIN = QUERY_PILIH_SEMUA + " WHERE username=? AND password=?";
     private final String QUERY_PILIH_LIKE = QUERY_PILIH_SEMUA + " where nama_p like ?";
+    private final String SQL_TAMBAH = "insert into tbl_pegawai ( id_pegawai, no_ktp_p, nama_depan_p,nama_belakang_p,jenis_kelamin_p,alamat_p, tanggal_lahir_p,no_telepon_p,username,password,tanggal_join_p) values (?,?,?,?,?,?,?,?,?,?,?)";
+    private final String SQL_DELETE = "delete from tbl_pegawai where id_pegawai = ?";
+    private final String SQL_EDIT = "UPDATE tbl_pegawai SET no_ktp_p=?,nama_p=?, jenis_kelamin_p=?, alamat_p=?, no_telepon_p=? where id_pegawai=?";
 
     @Override
     public void create(
@@ -61,9 +65,14 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
             String password,
             java.sql.Date tanggal_join) {
 
-        String SQL = "insert into tbl_pegawai ( id_pegawai, no_ktp_p, nama_depan_p,nama_belakang_p,jenis_kelamin_p,alamat_p, tanggal_lahir_p,no_telepon_p,username,password,tanggal_join_p) values (?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+            jdbcTemplateObject.update(SQL_TAMBAH, id_pegawai, no_ktp_p, nama_depan_p, nama_belakang_p, jenis_kelamin_p, alamat_p, tanggal_lahir_p, no_telepon_p, username, password, tanggal_join);
 
-        jdbcTemplateObject.update(SQL, id_pegawai, no_ktp_p, nama_depan_p, nama_belakang_p, jenis_kelamin_p, alamat_p, tanggal_lahir_p, no_telepon_p, username, password, tanggal_join);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+
+        }
         System.out.println("Masuk fungsi update");
         return;
     }
@@ -103,6 +112,7 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
                 break;
             case 2:
                 maxS = "PG0" + maxS;
+                break;
             default:
                 maxS = "PG" + maxS;
                 break;
@@ -114,16 +124,27 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
 
     @Override
     public List<Pegawai> listSemua() {
+        List<Pegawai> pegawais = null;
 
-        List<Pegawai> pegawais = jdbcTemplateObject.query(QUERY_PILIH_SEMUA, new PegawaiMapper());
+        try {
+            pegawais = jdbcTemplateObject.query(QUERY_PILIH_SEMUA, new PegawaiMapper());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         return pegawais;
     }
 
     @Override
     public Pegawai pilih_data(String kode) {
+        List<Pegawai> pegawais = null;
 
-        List<Pegawai> pegawais = jdbcTemplateObject.query(QUERY_PILIH_CARI, new PegawaiMapper(), kode);
-        //return pegawais.get(0);
+        try {
+            pegawais = jdbcTemplateObject.query(QUERY_PILIH_CARI, new PegawaiMapper(), kode);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         if (!pegawais.isEmpty()) {
             return pegawais.get(0);
         } else {
@@ -133,8 +154,13 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
 
     @Override
     public List<Pegawai> pilih_data_like(String kode) {
-
-        List<Pegawai> pegawais = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new PegawaiMapper(), "%" + kode + "%");
+        List<Pegawai> pegawais = null;
+        try {
+            pegawais = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new PegawaiMapper(), "%" + kode + "%");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         return pegawais;
     }
 
@@ -145,25 +171,41 @@ public class PegawaiJDBCTemplate implements PegawaiDAO {
 
     @Override
     public void delete(String id) {
-        String SQL = "delete from tbl_pegawai where id_pegawai = ?";
-        jdbcTemplateObject.update(SQL, id);
+        try {
+           jdbcTemplateObject.update(SQL_DELETE, id); 
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
+        
         return;
     }
 
     @Override
     public void edit(String id_pegawai, String no_ktp_p, String nama_p, String jenis_kelamin_p, String alamat_p, String no_telepon_p) {
         System.out.println("Masuk fungsi update");
-        String SQL = "UPDATE tbl_pegawai SET no_ktp_p=?,nama_p=?, jenis_kelamin_p=?, alamat_p=?, no_telepon_p=? where id_pegawai=?";
+        try {
+            jdbcTemplateObject.update(SQL_EDIT, no_ktp_p, nama_p, jenis_kelamin_p, alamat_p, no_telepon_p, id_pegawai);
 
-        jdbcTemplateObject.update(SQL, no_ktp_p, nama_p, jenis_kelamin_p, alamat_p, no_telepon_p, id_pegawai);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+
+        }
 
         return;
     }
 
     @Override
     public Pegawai pilih_data_login(String username, String password) {
-
-        List<Pegawai> pegawais = jdbcTemplateObject.query(QUERY_LOGIN, new PegawaiMapper(), username, password);
+        List<Pegawai> pegawais=null;
+        try {
+           pegawais = jdbcTemplateObject.query(QUERY_LOGIN, new PegawaiMapper(), username, password); 
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Exception :" + e);
+            return null;
+        }
+        
         if (!pegawais.isEmpty()) {
             return pegawais.get(0);
         } else {

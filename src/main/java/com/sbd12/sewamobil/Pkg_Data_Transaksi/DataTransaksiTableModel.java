@@ -21,19 +21,20 @@ import javax.swing.table.AbstractTableModel;
  * @author ArieDZ
  */
 public class DataTransaksiTableModel extends AbstractTableModel{
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
     private List<DataTransaksi> data;
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
     private DecimalFormat kursIndonesia;
     private DecimalFormatSymbols formatRp;
-    /*private String[] nameField={
-        "No Transaksi",
-        "Nama Kostumer",
-        "Nama Pegawawai",
-        "NoPol",
-        "Mobil",
-        "Pinjam",
-        "Kembali",
-        "Harga Total"};*/
+    
+    public void formatCurrency() {
+        kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        formatRp = new DecimalFormatSymbols();
+        formatRp.setCurrencySymbol("Rp. ");
+        formatRp.setMonetaryDecimalSeparator(',');
+        formatRp.setGroupingSeparator('.');
+
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+    }
     
     private String[] nameField={
         "No Transaksi",
@@ -41,7 +42,8 @@ public class DataTransaksiTableModel extends AbstractTableModel{
         "Nama Pegawawai",
         "Pinjam",
         "Kembali",
-        "Harga Total"};
+        "Harga Total",
+        "Status"};
     
     public void setData(List<DataTransaksi> data)
     {
@@ -78,6 +80,7 @@ public class DataTransaksiTableModel extends AbstractTableModel{
             case 3: return sdf.format(kst.getTglpinjam());
             case 4: return sdf.format(kst.getTglkembali());
             case 5: return kursIndonesia.format(kst.getHarga_total());
+            case 6: return kst.getStatus();
             default : return null;
         }
     }
@@ -87,14 +90,5 @@ public class DataTransaksiTableModel extends AbstractTableModel{
         return nameField[column];
     }
 
-    public void formatCurrency() {
-        kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-        formatRp = new DecimalFormatSymbols();
-        formatRp.setCurrencySymbol("Rp. ");
-        formatRp.setMonetaryDecimalSeparator(',');
-        formatRp.setGroupingSeparator('.');
-
-        kursIndonesia.setDecimalFormatSymbols(formatRp);
-    }
-
+    
 }
