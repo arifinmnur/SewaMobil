@@ -52,12 +52,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
 
     private DecimalFormat kursIndonesia;
     private DecimalFormatSymbols formatRp;
-    private List<JenisMobil> jeniss;
-    private List<ProdusenMobil> produsens;
-    private List<MerkMobil> merk_Mobils;
-    private List<DataMobil> dataMobils;
     private List<DataTransaksi> dataTransaksis;
-    private List<Pegawai> pegawais;
     private boolean mouseDisable = false;
 
     private ArrayList<String> listMobil = new ArrayList<>();
