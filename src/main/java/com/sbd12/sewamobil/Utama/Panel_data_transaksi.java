@@ -18,25 +18,23 @@ import com.sbd12.sewamobil.Pkg_Data_Mobil.*;
 import com.sbd12.sewamobil.Pkg_Data_Pegawai.Pegawai;
 import com.sbd12.sewamobil.Pkg_Jenis_Mobil.*;
 import com.sbd12.sewamobil.Pkg_Data_Transaksi.*;
-import com.sbd12.sewamobil.Pkg_Data_Transaksi.FD_Tampil_Kostumer.ForcedListSelectionModel;
-import com.sbd12.sewamobil.Pkg_Kostumer.Kostumer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.sql.Connection;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.JDialog;
 import javax.swing.ListSelectionModel;
-import jdk.nashorn.internal.objects.NativeDate;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -104,8 +102,8 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         db = (DataTransaksiJDBCTemplate) context.getBean("dataTransaksiJDBCTemplate");
 
         dataTransaksis = db.listSemua();
-        
-        System.out.println("JDBC URL ="+db.getJdbcurl());
+
+        System.out.println("JDBC URL =" + db.getJdbcurl());
 
         tampilData_Transaksi();
         formatCurrency();
@@ -407,6 +405,9 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         BtCari = new javax.swing.JButton();
         BtHapus = new javax.swing.JButton();
         BtRefresh = new javax.swing.JButton();
+        bt_laporan = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         lb_notrans = new javax.swing.JLabel();
         tf_no_transaksi = new javax.swing.JTextField();
@@ -437,16 +438,19 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         tf_harga_sudah_diskon = new javax.swing.JFormattedTextField();
         Bt_pilih_barang = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(960, 720));
         setMinimumSize(new java.awt.Dimension(960, 720));
         setPreferredSize(new java.awt.Dimension(960, 720));
 
-        bg.setBackground(new java.awt.Color(204, 204, 204));
+        bg.setBackground(new java.awt.Color(255, 255, 255));
         bg.setPreferredSize(new java.awt.Dimension(960, 510));
 
+        jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
         jScrollPane1.setOpaque(false);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(768, 331));
 
+        jTable1.setBackground(new java.awt.Color(204, 204, 204));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -460,6 +464,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        BtCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Search_24px.png"))); // NOI18N
         BtCari.setText("Cari");
         BtCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -467,6 +472,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
             }
         });
 
+        BtHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Waste_24px.png"))); // NOI18N
         BtHapus.setText("Hapus");
         BtHapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -474,6 +480,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
             }
         });
 
+        BtRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Reset_24px.png"))); // NOI18N
         BtRefresh.setText("Refresh");
         BtRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -481,37 +488,73 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
             }
         });
 
+        bt_laporan.setText("Laporan");
+        bt_laporan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_laporanActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setBackground(new java.awt.Color(204, 204, 204));
+        jScrollPane3.setOpaque(false);
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(768, 331));
+
+        jTable2.setBackground(new java.awt.Color(204, 204, 204));
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable2);
+
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);
         bgLayout.setHorizontalGroup(
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bgLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtRefresh)
-                    .addComponent(BtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BtHapus, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(BtRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BtCari, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BtHapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bt_laporan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         bgLayout.setVerticalGroup(
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bgLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 212, Short.MAX_VALUE))
-            .addGroup(bgLayout.createSequentialGroup()
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bgLayout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(BtRefresh)
+                        .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(bgLayout.createSequentialGroup()
+                                .addGap(82, 82, 82)
+                                .addComponent(BtRefresh)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(BtCari))
+                            .addGroup(bgLayout.createSequentialGroup()
+                                .addGap(41, 41, 41)
+                                .addComponent(BtHapus)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BtCari))
+                        .addComponent(bt_laporan))
                     .addGroup(bgLayout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(BtHapus)))
+                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         lb_notrans.setText("No Transaksi");
 
@@ -541,6 +584,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
 
         tf_lama_pinjam1.setText("0");
 
+        BtTambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Plus_24px_3.png"))); // NOI18N
         BtTambah.setText("Tambah Data");
         BtTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -548,6 +592,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
             }
         });
 
+        BtSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Save_24px.png"))); // NOI18N
         BtSimpan.setText("Simpan");
         BtSimpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -567,6 +612,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         tf_list_barang.setRows(5);
         jScrollPane2.setViewportView(tf_list_barang);
 
+        bt_Batal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Cancel_24px.png"))); // NOI18N
         bt_Batal.setText("Batal");
         bt_Batal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -599,7 +645,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
                 .addGap(19, 19, 19)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(BtTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(BtTambah)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BtSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -740,7 +786,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(bg, javax.swing.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
+                        .addComponent(bg, javax.swing.GroupLayout.DEFAULT_SIZE, 901, Short.MAX_VALUE)
                         .addGap(81, 81, 81))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -806,6 +852,10 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         // TODO add your handling code here:
         System.out.println("Menekan tombol hapus");
         int baris = jTable1.getSelectedRow();
+        if(baris<=-1){
+            JOptionPane.showMessageDialog(this, "Pilih Baris yang akan dihapus");
+            return;
+        }
         String id = (String) tableTransaksi.getValueAt(baris, 0);
         System.out.println(id);
 
@@ -955,13 +1005,13 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
             tf_nama_kostumer.setText(nama_kostumer);
             kode_kostumer = tampilKostumer.getKode_kostumer();
             diskon = tampilKostumer.getDiskon();
-            
+
             tampilKostumer.dispose();
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Panel_data_transaksi.class.getName()).log(Level.SEVERE, null, ex);
         }
-           
+
     }//GEN-LAST:event_jb_pilih_kostumerActionPerformed
 
     private void Bt_pilih_barangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bt_pilih_barangActionPerformed
@@ -992,6 +1042,46 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
         mouseDisable = false;// TODO add your handling code here:
     }//GEN-LAST:event_bt_BatalActionPerformed
 
+    private void bt_laporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_laporanActionPerformed
+
+        try {
+
+            //crud_Transaksi db = new crud_Transaksi();
+            Connection connection = db.getConnection();
+            JasperDesign jasperDesign = null;
+             JasperReport jasperReport;
+            // JasperReport jasperReport;
+            //JRResultSetDataSource jrRS = new JRResultSetDataSource (rs);
+            File file = new File("./src/main/resources/reports/DataTransaksiReport.jrxml");
+            File file2 = new File("classes/reports/DataTransaksiReport.jrxml");
+
+            try {
+                jasperDesign = JRXmlLoader.load(file);
+                
+            } catch (net.sf.jasperreports.engine.JRException e) {
+                System.out.println("File 1 error : " + e);
+                try {
+                    jasperDesign = JRXmlLoader.load(getClass().getResourceAsStream("/classes/reports/DataTransaksiReport.jrxml"));
+                  
+                } catch (net.sf.jasperreports.engine.JRException d) {
+                    System.out.println("File 2 error :" + d);
+                    return;
+                }
+            }
+            jasperReport = JasperCompileManager.compileReport(jasperDesign);
+            //param.clear();
+            //JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+           
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, connection);
+            JasperViewer.viewReport(jasperPrint, false);
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }// TODO add your handling code here:
+    }//GEN-LAST:event_bt_laporanActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtCari;
@@ -1002,6 +1092,7 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
     private javax.swing.JButton Bt_pilih_barang;
     private javax.swing.JPanel bg;
     private javax.swing.JButton bt_Batal;
+    private javax.swing.JButton bt_laporan;
     private com.toedter.calendar.JDateChooser jDate_tglkembali;
     private com.toedter.calendar.JDateChooser jDate_tglpinjam;
     private javax.swing.JLabel jLabel1;
@@ -1015,7 +1106,9 @@ public class Panel_data_transaksi extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JButton jb_pilih_kostumer;
     private javax.swing.JLabel lb_notrans;
     private javax.swing.JLabel lb_tanggal_kembali;
