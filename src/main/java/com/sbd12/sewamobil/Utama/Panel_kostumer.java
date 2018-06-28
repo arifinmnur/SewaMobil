@@ -5,7 +5,7 @@
  */
 package com.sbd12.sewamobil.Utama;
 
-import com.sbd12.sewamobil.Pkg_Kostumer.Jenis_Member;
+import com.sbd12.sewamobil.Pkg_Jenis_Member_dan_Diskon.JenisMember;
 import com.sbd12.sewamobil.Pkg_Kostumer.Kostumer;
 import com.sbd12.sewamobil.Pkg_Kostumer.KostumerJDBCTemplate;
 import com.sbd12.sewamobil.Pkg_Kostumer.KostumerTableModel;
@@ -35,7 +35,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
 
     private Kostumer kostumer;
     private List<Kostumer> kostumers;
-    private List<Jenis_Member> jenis_Members;
+    private List<JenisMember> jenis_Members;
     private KostumerJDBCTemplate db;
     private String status;
     private String jenisKelamin;
@@ -73,7 +73,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
 
                         status = mm.getId_jenis_member();
 
-                        Jenis_Member jm = db.pilih_data_jenis_member(status);
+                        JenisMember jm = db.pilih_data_jenis_member(status);
                         jcb_jenis_member.setSelectedIndex(jm.getCounter());
 
                         jenisKelamin = mm.getJenis_kelamin_k();
@@ -253,18 +253,21 @@ public class Panel_kostumer extends javax.swing.JPanel {
         bt_batal = new javax.swing.JButton();
         jb_Simpan_edit = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(960, 720));
         setMinimumSize(new java.awt.Dimension(960, 720));
         setPreferredSize(new java.awt.Dimension(960, 720));
 
-        bg.setBackground(new java.awt.Color(204, 204, 204));
+        bg.setBackground(new java.awt.Color(255, 255, 255));
         bg.setMaximumSize(new java.awt.Dimension(960, 720));
         bg.setMinimumSize(new java.awt.Dimension(960, 720));
         bg.setPreferredSize(new java.awt.Dimension(960, 720));
 
+        jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
         jScrollPane1.setOpaque(false);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(768, 331));
 
+        jTable1.setBackground(new java.awt.Color(204, 204, 204));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -279,6 +282,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
         jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(jTable1);
 
+        BtTambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Plus_24px_3.png"))); // NOI18N
         BtTambah.setText("Tambah");
         BtTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -286,6 +290,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
             }
         });
 
+        BtEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Edit_File_24px.png"))); // NOI18N
         BtEdit.setText("Edit");
         BtEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -293,6 +298,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
             }
         });
 
+        BtHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Waste_24px.png"))); // NOI18N
         BtHapus.setText("Hapus");
         BtHapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -300,6 +306,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
             }
         });
 
+        BtRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Reset_24px.png"))); // NOI18N
         BtRefresh.setText("Refresh");
         BtRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -307,6 +314,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
             }
         });
 
+        BtCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Search_24px.png"))); // NOI18N
         BtCari.setText("Cari");
         BtCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -322,13 +330,13 @@ public class Panel_kostumer extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtTambah)
+                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(BtTambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BtEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BtHapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(BtEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtHapus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtRefresh, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(BtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(BtCari, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(BtRefresh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         bgLayout.setVerticalGroup(
@@ -350,6 +358,8 @@ public class Panel_kostumer extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(373, 373, 373))
         );
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         lb_id_kos.setText("ID Kostumer");
 
@@ -391,6 +401,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
 
         lb_umur.setText("Umur");
 
+        bt_simpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Save_24px.png"))); // NOI18N
         bt_simpan.setText("Simpan");
         bt_simpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -398,6 +409,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
             }
         });
 
+        bt_batal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Cancel_24px.png"))); // NOI18N
         bt_batal.setText("Batal");
         bt_batal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -405,6 +417,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
             }
         });
 
+        jb_Simpan_edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Save_as_24px_2.png"))); // NOI18N
         jb_Simpan_edit.setText("Simpan");
         jb_Simpan_edit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -441,8 +454,8 @@ public class Panel_kostumer extends javax.swing.JPanel {
                         .addGap(9, 9, 9)
                         .addComponent(bt_simpan)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_batal, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bt_batal)
+                        .addGap(2, 2, 2)
                         .addComponent(jb_Simpan_edit)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -623,7 +636,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
         String generate_id_member = null;
         
         int posisiJenisMember =jcb_jenis_member.getSelectedIndex();
-        for(Jenis_Member list:jenis_Members){
+        for(JenisMember list:jenis_Members){
             if(list.getCounter()==posisiJenisMember)
             {
                 status=list.getId_jenis_member();
@@ -694,7 +707,7 @@ public class Panel_kostumer extends javax.swing.JPanel {
         String generate_id_member = null;
 
         int posisiJenisMember =jcb_jenis_member.getSelectedIndex();
-        for(Jenis_Member list:jenis_Members){
+        for(JenisMember list:jenis_Members){
             if(list.getCounter()==posisiJenisMember)
             {
                 status=list.getId_jenis_member();
