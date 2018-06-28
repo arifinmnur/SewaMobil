@@ -33,7 +33,7 @@ public class OwnerMobilJDBCTemplate implements OwnerMobilDAO {
     private final String SQL_TAMBAH = "INSERT INTO tbl_owner_mobil (id_owner, no_ktp_ow,nama_ow,jenis_kelamin_ow,alamat_ow,no_telepon_ow) values (?, ?,?,?,?,?)";
     private final String SQL_EDIT = "UPDATE tbl_owner_mobil SET no_ktp_ow=?,nama_ow=?, jenis_kelamin_ow=?, alamat_ow=?, no_telepon_ow=? where id_owner=? ";  
     private final String SQL_HAPUS = "DELETE FROM tbl_owner_mobil where id_owner = ?";  
-
+    private final String QUERY_PILIH_LIKE = SQL_PILIH_SEMUA + " WHERE id_owner like ? OR nama_ow like ? OR no_telepon_ow like ?";
     /**
      * Note
      *
@@ -52,7 +52,13 @@ public class OwnerMobilJDBCTemplate implements OwnerMobilDAO {
       jdbcTemplateObject.update( SQL_TAMBAH, id_owner, no_ktp_ow,nama_ow,jenis_kelamin_ow,alamat_ow,no_telepon_ow);
       return;
     }
-
+    
+    public List<OwnerMobil> pilih_data_like(String kode) {
+        String id = "%" + kode + "%";
+        List<OwnerMobil> ownerMobils = jdbcTemplateObject.query(QUERY_PILIH_LIKE, new OwnerMobilMapper(), id,id,id);
+        return ownerMobils;
+    }
+    
     @Override
     public List<OwnerMobil> listSemua() {
 
@@ -152,7 +158,7 @@ public class OwnerMobilJDBCTemplate implements OwnerMobilDAO {
             owner.setNama_ow(rs.getString(3));
             owner.setJenis_Kelamin(rs.getString(4));
             owner.setAlamat_ow(rs.getString(5));
-            owner.setNo_ktp_ow(rs.getString(6));
+            owner.setNo_telepon_ow(rs.getString(6));
             return owner;
         }
 

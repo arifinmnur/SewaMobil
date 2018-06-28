@@ -25,6 +25,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -45,6 +47,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
     private DecimalFormat kursIndonesia;
     private DecimalFormatSymbols formatRp;
     private String no_pol, id_merk, nama_merk, nama_prod, nama_jenis, id_ow, nama_ow, no_telepon_ow;
+    private String old_no_pol;
     private double hargaPerhari = 0;
 
     public Panel_data_mobil() throws ClassNotFoundException {
@@ -132,6 +135,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
         tableMobil = new DataMobilTableModel();
         tableMobil.setData(dataMobils);
         jTable1.setModel(tableMobil);
+        jTable1.setSelectionModel(new ForcedListSelectionModel());
 
     }
 
@@ -157,7 +161,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
                 bt_batal.setVisible(true);
             }
         }
-        
+
         bt_pilih_id.setVisible(!tampil);
         bt_pilih_owner.setVisible(!tampil);
         BtEdit.setEnabled(tampil);
@@ -174,6 +178,22 @@ public class Panel_data_mobil extends javax.swing.JPanel {
         tableMobil.setData(dataMobils);
         tableMobil.fireTableDataChanged();
         jTable1.changeSelection(0, 0, false, false);
+    }
+    
+     public class ForcedListSelectionModel extends DefaultListSelectionModel {
+
+        public ForcedListSelectionModel() {
+            setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+
+        @Override
+        public void clearSelection() {
+        }
+
+        @Override
+        public void removeSelectionInterval(int index0, int index1) {
+        }
+
     }
 
     /**
@@ -218,12 +238,14 @@ public class Panel_data_mobil extends javax.swing.JPanel {
         bt_pilih_owner = new javax.swing.JButton();
         bt_pilih_id = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setMinimumSize(new java.awt.Dimension(960, 720));
         setPreferredSize(new java.awt.Dimension(960, 720));
 
-        bg.setBackground(new java.awt.Color(204, 204, 204));
+        bg.setBackground(new java.awt.Color(255, 255, 255));
         bg.setPreferredSize(new java.awt.Dimension(960, 510));
 
+        jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
         jScrollPane1.setOpaque(false);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(768, 331));
 
@@ -240,6 +262,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(jTable1);
 
+        BtTambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Plus_24px_3.png"))); // NOI18N
         BtTambah.setText("Tambah");
         BtTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,13 +270,15 @@ public class Panel_data_mobil extends javax.swing.JPanel {
             }
         });
 
-        BtEdit.setText("Edit");
+        BtEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Edit_File_24px.png"))); // NOI18N
+        BtEdit.setText("     Edit");
         BtEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtEditActionPerformed(evt);
             }
         });
 
+        BtHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Waste_24px.png"))); // NOI18N
         BtHapus.setText("Hapus");
         BtHapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -261,6 +286,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
             }
         });
 
+        BtRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Reset_24px.png"))); // NOI18N
         BtRefresh.setText("Refresh");
         BtRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -268,6 +294,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
             }
         });
 
+        BtCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Search_24px.png"))); // NOI18N
         BtCari.setText("Cari");
         BtCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -284,19 +311,20 @@ public class Panel_data_mobil extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BtTambah)
-                    .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(BtEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtHapus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtCari, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtRefresh, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addGap(0, 92, Short.MAX_VALUE))
+                    .addComponent(BtTambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BtEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BtHapus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(bgLayout.createSequentialGroup()
+                        .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(BtRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(BtCari, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(64, 64, 64))
         );
         bgLayout.setVerticalGroup(
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bgLayout.createSequentialGroup()
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(bgLayout.createSequentialGroup()
                         .addComponent(BtTambah)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -306,9 +334,12 @@ public class Panel_data_mobil extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(BtRefresh)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BtCari)))
-                .addGap(0, 97, Short.MAX_VALUE))
+                        .addComponent(BtCari))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 138, Short.MAX_VALUE))
         );
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel2.setText("No Polisi");
 
@@ -385,6 +416,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
             }
         });
 
+        bt_simpan_tambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Save_24px.png"))); // NOI18N
         bt_simpan_tambah.setText("Simpan");
         bt_simpan_tambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -392,6 +424,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
             }
         });
 
+        bt_batal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Cancel_24px.png"))); // NOI18N
         bt_batal.setText("Batal");
         bt_batal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -399,6 +432,7 @@ public class Panel_data_mobil extends javax.swing.JPanel {
             }
         });
 
+        bt_simpan_edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_Save_as_24px_2.png"))); // NOI18N
         bt_simpan_edit.setText("Simpan");
         bt_simpan_edit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -407,39 +441,43 @@ public class Panel_data_mobil extends javax.swing.JPanel {
         });
 
         bt_pilih_owner.setText("Pilih");
+        bt_pilih_owner.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_pilih_ownerActionPerformed(evt);
+            }
+        });
 
         bt_pilih_id.setText("Pilih");
+        bt_pilih_id.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_pilih_idActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(55, 55, 55)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8))
-                .addGap(47, 47, 47)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tf_jenis_kendaraan)
-                    .addComponent(tf_no_pol, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                    .addComponent(tf_nama_merk)
-                    .addComponent(tf_id_merk, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tf_nama_produsen))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bt_pilih_id, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(bt_simpan_tambah, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addGap(47, 47, 47)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tf_jenis_kendaraan)
+                            .addComponent(tf_no_pol, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                            .addComponent(tf_nama_merk)
+                            .addComponent(tf_id_merk, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tf_nama_produsen))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_batal, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_simpan_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(bt_pilih_id, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -456,7 +494,15 @@ public class Panel_data_mobil extends javax.swing.JPanel {
                                 .addGap(88, 88, 88)
                                 .addComponent(tf_no_telepon_owner)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_pilih_owner, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(bt_pilih_owner, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(378, 378, 378)
+                        .addComponent(bt_simpan_tambah, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_batal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_simpan_edit)
+                        .addGap(0, 92, Short.MAX_VALUE)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -536,20 +582,38 @@ public class Panel_data_mobil extends javax.swing.JPanel {
     }//GEN-LAST:event_BtTambahActionPerformed
 
     private void BtEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtEditActionPerformed
-        System.out.println("Menekan Tombol Tambah");
-        enableInput(true);
-        setTambah(false, true);
-        resetInput();
+      System.out.println("Menekan tombol edit");
+        if (tf_no_pol.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih Baris yg akan di Edit");
+        } else {
+            old_no_pol=tf_no_pol.getText();
+            enableInput(true);
+            setTambah(false, false);
+        }
     }//GEN-LAST:event_BtEditActionPerformed
 
     private void BtHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtHapusActionPerformed
-        // TODO add your handling code here:
-
-        int baris = jTable1.getSelectedRow();
-//            String id=(String)tableMerk.getValueAt(baris, 0);
-//            merk_mobilJDBCTemplate.delete(id);
+      int baris = jTable1.getSelectedRow();
+        String id = (String) tableMobil.getValueAt(baris, 0);
+        String nama = (String) tableMobil.getValueAt(baris, 1);
+        String owner = (String) tableMobil.getValueAt(baris, 1);
         System.out.println("Menekan tombol hapus");
-        //System.out.println(id);
+        System.out.println(id);
+        Object[] pilihan = {"Ya", "Tidak"};
+        int jawaban = JOptionPane.showOptionDialog(null, "Anda yakin Data "
+                + "Mobil dengan No Pol='" + id
+                + "', Merk='"+nama+"', Owner='"+owner+"' akan dihapus? ","Peringatan",JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE,null,pilihan,pilihan[0]
+        );
+            if (jawaban == 0) {
+            db.delete(id);
+        }
+        try {
+            refreshData();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Panel_pegawai.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_BtHapusActionPerformed
 
     private void BtRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtRefreshActionPerformed
@@ -563,17 +627,13 @@ public class Panel_data_mobil extends javax.swing.JPanel {
 
     private void BtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtCariActionPerformed
         // TODO add your handling code here:
-        /*String katakunci;
-        katakunci=JOptionPane.showInputDialog(null,"Nama barang yang di cari?","Filter/Pencarian",JOptionPane.QUESTION_MESSAGE);
+        String katakunci;
+        katakunci=JOptionPane.showInputDialog(null,"Masukan kata kunci yang di cari?","Filter/Pencarian",JOptionPane.QUESTION_MESSAGE);
         if(katakunci!=null)
         {
-            try {
-                tabelbarang.setData(db.filter(katakunci));
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(panel_data_barang.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            tabelbarang.fireTableDataChanged();
-        }*/
+            tableMobil.setData(db.pilih_data_like(katakunci));
+            tableMobil.fireTableDataChanged();
+        }
     }//GEN-LAST:event_BtCariActionPerformed
 
 
@@ -610,14 +670,38 @@ public class Panel_data_mobil extends javax.swing.JPanel {
     }//GEN-LAST:event_tf_no_telepon_ownerActionPerformed
 
     private void bt_simpan_tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_simpan_tambahActionPerformed
-    try {
-            refreshData();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Panel_data_mobil.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println("Menekan tombol simpan tambah");
+
+        if ((!tf_no_pol.getText().isEmpty())
+                && (!tf_id_merk.getText().isEmpty())
+                && (!tf_id_owner.getText().isEmpty())) {
+
+            no_pol = tf_no_pol.getText();
+            id_merk = tf_id_merk.getText();
+            id_ow = tf_id_owner.getText();
+            Object[] pilihan = {"Ya", "Tidak"};
+            int jawaban = JOptionPane.showOptionDialog(null, "Anda yakin akan menambah Data "
+                    + "Mobil dengan No Pol='" + no_pol + "' dan Merk='" + nama_merk + "'"
+                    + "?", "Peringatan", JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE, null, pilihan, pilihan[0]
+            );
+            if (jawaban == 0) {
+                db.create(no_pol, id_merk, id_ow);
+            }
+            try {
+                refreshData();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Panel_data_mobil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setTambah(true, true);
+            enableInput(false);
+            resetInput();
+            jTable1.setRowSelectionInterval(0, 0);
+        } else {
+            JOptionPane.showMessageDialog(form_parent, "Data Belum Lengkap, Mohon diisi Semua");
         }
-        setTambah(true, true);
-        enableInput(false);
-        resetInput();            // TODO add your handling code here:
+
+        // TODO add your handling code here:
     }//GEN-LAST:event_bt_simpan_tambahActionPerformed
 
     private void bt_batalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_batalActionPerformed
@@ -628,17 +712,86 @@ public class Panel_data_mobil extends javax.swing.JPanel {
     }//GEN-LAST:event_bt_batalActionPerformed
 
     private void bt_simpan_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_simpan_editActionPerformed
-        try {
-            refreshData();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Panel_data_mobil.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        setTambah(true, false);
-        enableInput(false);
-        resetInput();
+   
+        System.out.println("Menekan tombol Simpan Edit");
 
-        jTable1.setRowSelectionInterval(0, 0);          // TODO add your handling code here:
+        if ((!tf_no_pol.getText().isEmpty())
+                && (!tf_id_merk.getText().isEmpty())
+                && (!tf_id_owner.getText().isEmpty())) {
+
+            no_pol = tf_no_pol.getText();
+            id_merk = tf_id_merk.getText();
+            id_ow = tf_id_owner.getText();
+            nama_merk=tf_nama_merk.getText();
+            Object[] pilihan = {"Ya", "Tidak"};
+            int jawaban = JOptionPane.showOptionDialog(null, "Anda yakin akan Edit Data "
+                    + "Mobil dengan No Pol='" + no_pol + "' dan Merk='" + nama_merk + "'"
+                    + "?", "Peringatan", JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE, null, pilihan, pilihan[0]
+            );
+            if (jawaban == 0) {
+                db.edit(no_pol, id_merk, id_ow,old_no_pol);
+            }
+            try {
+                refreshData();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Panel_data_mobil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setTambah(true, false);
+            enableInput(false);
+            resetInput();
+
+            jTable1.setRowSelectionInterval(0, 0);
+        } else {
+            JOptionPane.showMessageDialog(form_parent, "Data Belum Lengkap, Mohon diisi Semua");
+        }
     }//GEN-LAST:event_bt_simpan_editActionPerformed
+
+    private void bt_pilih_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_pilih_idActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            FD_Merk_Mobil fD_Merk_Mobil = new FD_Merk_Mobil(form_parent, true);
+            fD_Merk_Mobil.setTitle("Pilih Kostumer");
+            fD_Merk_Mobil.setVisible(true);
+            id_merk = fD_Merk_Mobil.getId_merk();
+            nama_merk = fD_Merk_Mobil.getNama_merk();
+            nama_prod = fD_Merk_Mobil.getNama_prod();
+            nama_jenis = fD_Merk_Mobil.getNama_jenis();
+            hargaPerhari = fD_Merk_Mobil.getHargaPerhhari();
+
+            tf_id_merk.setText(id_merk);
+            tf_nama_merk.setText(nama_merk);
+            tf_nama_produsen.setText(nama_prod);
+            tf_jenis_kendaraan.setText(nama_jenis);
+            tf_harga_Sewa.setText(kursIndonesia.format(hargaPerhari));
+            fD_Merk_Mobil.dispose();
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Panel_data_transaksi.class.getName()).log(Level.SEVERE, null, ex);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_bt_pilih_idActionPerformed
+
+    private void bt_pilih_ownerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_pilih_ownerActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            FD_Owner_Mobil fD_Owner_Mobil = new FD_Owner_Mobil(form_parent, true);
+            fD_Owner_Mobil.setTitle("Pilih Owner");
+            fD_Owner_Mobil.setVisible(true);
+            id_ow = fD_Owner_Mobil.getId_owner();
+            nama_ow = fD_Owner_Mobil.getNama_owner();
+            no_telepon_ow = fD_Owner_Mobil.getNo_telepon_owner();
+
+            tf_id_owner.setText(id_ow);
+            tf_nama_owner.setText(nama_ow);
+            tf_no_telepon_owner.setText(no_telepon_ow);
+            fD_Owner_Mobil.dispose();
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Panel_data_transaksi.class.getName()).log(Level.SEVERE, null, ex);
+        }   // TODO add your handling code here:
+    }//GEN-LAST:event_bt_pilih_ownerActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

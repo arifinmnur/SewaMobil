@@ -38,10 +38,15 @@ CREATE TABLE `detail_transaksi` (
 /*Data for the table `detail_transaksi` */
 
 insert  into `detail_transaksi`(`no_transaksi`,`no_pol`,`id_petugas_pengembalian`,`tglkembali`,`denda`,`catatan`) values 
-('TRX0000001','D4021TZ','PG003','2018-01-24 21:37:41',0,'s'),
-('TRX0000002','D4652TZ','PG001','2018-01-20 23:47:01',50000,NULL),
-('TRX0000002','D4666AS',NULL,NULL,NULL,NULL),
-('TRX0000003','D2111FZ',NULL,NULL,NULL,NULL);
+('TRX0000001','D4021TZ','PG001','2018-01-24 07:02:32',0,''),
+('TRX0000002','D4652TZ','PG001','2018-01-24 08:00:05',4800000,''),
+('TRX0000002','D4666AS','PG001','2018-01-24 08:00:05',4800000,''),
+('TRX0000003','D2111FF',NULL,NULL,NULL,NULL),
+('TRX0000004','D4612FA',NULL,NULL,NULL,NULL),
+('TRX0000005','D6541FZ',NULL,NULL,NULL,NULL),
+('TRX0000006','D9999TE',NULL,NULL,NULL,NULL),
+('TRX0000007','D4223FZ','PG001','2018-01-24 08:14:18',1050000,''),
+('TRX0000008','D7777HD','PG001','2018-02-05 10:27:28',2000000,'');
 
 /*Table structure for table `login` */
 
@@ -83,7 +88,7 @@ CREATE TABLE `tbl_data_mobil` (
 /*Data for the table `tbl_data_mobil` */
 
 insert  into `tbl_data_mobil`(`no_pol`,`id_merk_mobil`,`id_owner`) values 
-('D2111FZ','HND06','OW01'),
+('D2111FF','HND06','OW01'),
 ('D2111TE','MTS03','OW01'),
 ('D2222ER','HND05','OW01'),
 ('D2223KJ','SZI07','OW02'),
@@ -107,6 +112,7 @@ insert  into `tbl_data_mobil`(`no_pol`,`id_merk_mobil`,`id_owner`) values
 ('D5543EE','TYT15','OW01'),
 ('D5555KL','SZI04','OW02'),
 ('D6541FZ','TYT06','OW01'),
+('D6666AS','HND05','OW03'),
 ('D7777HD','HND09','OW01'),
 ('D8181FR','TYT07','OW01'),
 ('D8888FS','TYT08','OW01'),
@@ -119,7 +125,6 @@ insert  into `tbl_data_mobil`(`no_pol`,`id_merk_mobil`,`id_owner`) values
 ('D9792RZ','TYT11','OW01'),
 ('D9898RF','TYT10','OW01'),
 ('D9999DE','TYT09','OW01'),
-('D9999ED','HND11','OW02'),
 ('D9999HD','HND07','OW01'),
 ('D9999IJ','SZI06','OW02'),
 ('D9999TE','MTS01','OW01');
@@ -148,9 +153,14 @@ CREATE TABLE `tbl_data_transaksi` (
 /*Data for the table `tbl_data_transaksi` */
 
 insert  into `tbl_data_transaksi`(`no_transaksi`,`id_kostumer`,`id_pegawai`,`tglpinjam`,`tglkembali`,`harga_sebelum_diskon`,`harga_diskon`,`tgltransaksi`,`Status`) values 
-('TRX0000001','KZ0000036','PG002','2018-01-24','2018-01-24',250000,25000,'2018-01-15 09:03:41','BELUM SELESAI'),
-('TRX0000002','KZ000041B','PG001','2018-01-18','2018-01-18',400000,40000,'2018-01-15 09:08:53','BELUM SELESAI'),
-('TRX0000003','KZ000041D','PG002','2018-01-18','2018-01-20',0,0,'2018-01-16 23:59:12','BELUM SELESAI');
+('TRX0000001','KZ0000036','PG002','2018-01-24','2018-01-24',250000,25000,'2018-01-15 09:03:41','SELESAI'),
+('TRX0000002','KZ000041B','PG001','2018-01-18','2018-01-18',400000,40000,'2018-01-15 09:08:53','SELESAI'),
+('TRX0000003','KZ000041D','PG002','2018-01-18','2018-01-20',0,0,'2018-01-16 23:59:12','BELUM SELESAI'),
+('TRX0000004','KZ000041F','PG001','2018-01-24','2018-01-24',750000,0,'2018-01-24 07:04:20','BELUM SELESAI'),
+('TRX0000005','KZ000041B','PG001','2018-01-21','2018-01-24',1050000,105000,'2018-01-24 07:05:40','BELUM SELESAI'),
+('TRX0000006','KZ0000037','PG001','2018-01-19','2018-01-23',1250000,125000,'2018-01-24 07:06:30','BELUM SELESAI'),
+('TRX0000007','KZ0000420','PG001','2018-01-18','2018-01-21',1400000,0,'2018-01-24 07:07:24','SELESAI'),
+('TRX0000008','KZ000041E','PG001','2018-01-23','2018-01-28',1500000,300000,'2018-01-24 07:08:08','SELESAI');
 
 /*Table structure for table `tbl_jenis_member_dan_diskon` */
 
@@ -163,7 +173,7 @@ CREATE TABLE `tbl_jenis_member_dan_diskon` (
   `diskon` double DEFAULT NULL,
   PRIMARY KEY (`id_jenis_member`),
   UNIQUE KEY `counter` (`counter`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_jenis_member_dan_diskon` */
 
@@ -258,7 +268,6 @@ insert  into `tbl_merk_mobil`(`id_merk_mobil`,`id_produsen_mobil`,`id_jenis_mobi
 ('HND08','HND','FMY2','CR-V'),
 ('HND09','HND','FMY1','BR-V'),
 ('HND10','HND','SDN2','City'),
-('HND11','HND','FMY3','Oddysey'),
 ('MTS01','MTS','FMY1','Xpander'),
 ('MTS02','MTS','FMY2','Pajero Sport'),
 ('MTS03','MTS','FMY2','Outlander'),
@@ -306,7 +315,8 @@ CREATE TABLE `tbl_owner_mobil` (
 insert  into `tbl_owner_mobil`(`id_owner`,`no_ktp_ow`,`nama_ow`,`jenis_kelamin_ow`,`alamat_ow`,`no_telepon_ow`) values 
 ('OW01','101020201234','Afrizal','L','Jalan Setiabudi','081256123434'),
 ('OW02','101020201235','Risa','P','Jalan Geger Kalong','089656123443'),
-('OW03','101020201245','Sarah','P','Jalan Dipatiukur','0896');
+('OW03','101020201245','Sarah','P','Jalan Dipatiukur','0896'),
+('OW10','101020201245','Dini','P','Jalan Lembang','089656123443');
 
 /*Table structure for table `tbl_pegawai` */
 
@@ -353,7 +363,15 @@ CREATE TABLE `tbl_pembayaran` (
 
 insert  into `tbl_pembayaran`(`no_transaksi`,`id_pembayaran`,`jenis_pembayaran`,`jumlah`,`tglpembayaran`,`keterangan`) values 
 ('TRX0000001',1,'PELUNASAN',225000,'2018-01-15 09:03:41','Pelunasan kode_transaksi=TRX0000001 Nama Kostumer=Rendy Gilang'),
-('TRX0000002',1,'PELUNASAN',360000,'2018-01-15 09:08:53','Pelunasan kode_transaksi=TRX0000002 Nama Kostumer=Hannah Melody');
+('TRX0000002',1,'PELUNASAN',360000,'2018-01-15 09:08:53','Pelunasan kode_transaksi=TRX0000002 Nama Kostumer=Hannah Melody'),
+('TRX0000002',2,'DENDA',4800000,'2018-01-24 08:00:05','Denda dgn telat 6hari'),
+('TRX0000004',1,'PELUNASAN',750000,'2018-01-24 07:04:20','Pelunasan kode_transaksi=TRX0000004 Nama Kostumer=Ghina Hannah'),
+('TRX0000005',1,'PELUNASAN',945000,'2018-01-24 07:05:40','Pelunasan kode_transaksi=TRX0000005 Nama Kostumer=Hannah Melody'),
+('TRX0000006',1,'PELUNASAN',1125000,'2018-01-24 07:06:31','Pelunasan kode_transaksi=TRX0000006 Nama Kostumer=Raisa Reid'),
+('TRX0000007',1,'PELUNASAN',1400000,'2018-01-24 07:07:24','Pelunasan kode_transaksi=TRX0000007 Nama Kostumer=Sani Arisani'),
+('TRX0000007',2,'DENDA',1050000,'2018-01-24 08:14:18','Denda dgn telat 3hari'),
+('TRX0000008',1,'PELUNASAN',1200000,'2018-01-24 07:08:08','Pelunasan kode_transaksi=TRX0000008 Nama Kostumer=Rivat Sungkar'),
+('TRX0000008',2,'DENDA',2000000,'2018-02-05 10:27:28','Denda dgn telat 8hari');
 
 /*Table structure for table `tbl_pengembalian` */
 
@@ -361,11 +379,22 @@ DROP TABLE IF EXISTS `tbl_pengembalian`;
 
 CREATE TABLE `tbl_pengembalian` (
   `no_transaksi` varchar(15) NOT NULL,
+  `id_pegawai` char(9) NOT NULL,
+  `denda` double NOT NULL DEFAULT '0',
+  `tglpengembalian` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`no_transaksi`),
-  CONSTRAINT `tbl_pengembalian_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `tbl_pengembalian_ibfk_2` (`id_pegawai`),
+  CONSTRAINT `tbl_pengembalian_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_pengembalian_ibfk_2` FOREIGN KEY (`id_pegawai`) REFERENCES `tbl_pegawai` (`id_pegawai`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `tbl_pengembalian` */
+
+insert  into `tbl_pengembalian`(`no_transaksi`,`id_pegawai`,`denda`,`tglpengembalian`) values 
+('TRX0000001','PG001',0,'2018-01-24 07:02:31'),
+('TRX0000002','PG001',4800000,'2018-01-24 08:00:04'),
+('TRX0000007','PG001',1050000,'2018-01-24 08:14:18'),
+('TRX0000008','PG001',2000000,'2018-02-05 10:27:28');
 
 /*Table structure for table `tbl_produsen_mobil` */
 

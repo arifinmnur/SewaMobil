@@ -1,3 +1,6 @@
+java -jar C:\Users\ArieDZ_2\IdeaProjects\sbd-rev\target\SewaMobil-1.0-SNAPSHOT.jar
+
+
 SELECT DISTINCT dm.no_pol,mm.nama_mobil 
 FROM tbl_data_mobil AS dm
 INNER JOIN tbl_merk_mobil AS mm ON mm.`id_merk_mobil`=dm.`id_merk_mobil`

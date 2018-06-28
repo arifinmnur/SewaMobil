@@ -24,10 +24,11 @@ public interface DataMobilDAO {
      * @param name
      * @param age
      */
-    public void create(String name, Integer age);
-
+    public void create(String no_pol, String id_merk,String id_owner);
+    public void delete(String id);
+    public void edit(String no_pol, String id_merk,String id_owner,String old_no_pol);
     public DataMobil getNo_pol(Integer nopol);
-
+    public DataMobil pilih_data(String kode);
     /**
      * This is the method to be used to list down all the records from the
      * Student table.

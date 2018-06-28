@@ -46,13 +46,14 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
             + " INNER JOIN tbl_owner_mobil       AS jm   ON mm.id_owner=jm.id_owner"
             + " INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil";
 
-    private final String SQL_TAMPIL_DATA_MOBIL_BERDASAR_WHERE = SQL_TAMPIL_DATA_MOBIL
+    private final String SQL_TAMPIL_DATA_MOBIL_BERDASAR_LIKE = SQL_TAMPIL_DATA_MOBIL
             + " WHERE mm.no_pol LIKE ? "
             + " OR pm.nama_mobil LIKE ? "
             + " OR jm.nama_ow LIKE ? "
             + " OR jmm.nama_jenis LIKE ?";
     private final String QUERY_PILIH_CARI=SQL_TAMPIL_DATA_MOBIL+" WHERE no_pol=?";
-
+    private final String SQL_TAMBAH = "INSERT INTO tbl_data_mobil (no_pol, id_merk_mobil,id_owner) values (?, ?,?)";
+    private final String SQL_DELETE = "DELETE FROM tbl_data_mobil WHERE no_pol = ?";
     @Autowired
     @Override
     public void setDataSource(DataSource dataSource) {
@@ -61,18 +62,50 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
     }
 
     @Override
-    public void create(String id_produsen, Integer nama_produsen) {
-        /*String SQL = "insert into tbl_produsen_mobil (id_produsen_mobil, nama_produsen) values (?, ?)";
+    public void create(String no_pol, String id_merk,String id_owner){
+        try {
+          jdbcTemplateObject.update(SQL_TAMBAH, no_pol, id_merk,id_owner);  
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
       
-      jdbcTemplateObject.update( SQL, id_produsen, nama_produsen);
-      System.out.println("Created Record Name = " + id_produsen + " Age = " + nama_produsen);
-      return;*/
+      return;
     }
+    
+    @Override
+    public void edit(String no_pol, String id_merk,String id_owner,String old_no_pol){
+        String SQL = "UPDATE tbl_data_mobil SET no_pol=?,id_merk_mobil=?, id_owner=? WHERE no_pol=?";
+        try {
+           jdbcTemplateObject.update(SQL, no_pol, id_merk, id_owner, old_no_pol); 
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return;
+        }
 
+        return;
+    }
+    @Override
+    public void delete(String id) {
+        
+
+        try {
+            jdbcTemplateObject.update(SQL_DELETE, id);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+        }
+        return;
+    }
     @Override
     public List<DataMobil> listSemua() {
+        List<DataMobil> data_mobil = null;
+        try {
 
-        List<DataMobil> data_mobil = jdbcTemplateObject.query(SQL_TAMPIL_DATA_MOBIL, new DataMobilMapper());
+            data_mobil = jdbcTemplateObject.query(SQL_TAMPIL_DATA_MOBIL + " ORDER BY jm.nama_ow ASC,mm.no_pol ASC,pm.nama_mobil ASC", new DataMobilMapper());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+        }
         return data_mobil;
     }
 
@@ -86,14 +119,24 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
                 + " INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil "
                 + " LEFT JOIN tbl_pegawai AS pgw ON pgw.id_pegawai=dtx.id_petugas_pengembalian"
                 + " WHERE dtx.no_transaksi=?";
-
-        List<DataMobil> data_mobil = jdbcTemplateObject.query(SQL, new DataMobilDetailMapper(), noTransaksi);
+        List<DataMobil> data_mobil = null;
+        try {
+            data_mobil = jdbcTemplateObject.query(SQL, new DataMobilDetailMapper(), noTransaksi);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+        }
         return data_mobil;
     }
     
+    @Override
     public DataMobil pilih_data(String kode) {
-        List<DataMobil> dataMobils = jdbcTemplateObject.query(QUERY_PILIH_CARI, new DataMobilMapper(), kode);
-        
+        List<DataMobil> dataMobils = null;
+        try {
+            dataMobils = jdbcTemplateObject.query(QUERY_PILIH_CARI, new DataMobilMapper(), kode);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
         if (!dataMobils.isEmpty()) {
             return dataMobils.get(0);
         } else {
@@ -103,45 +146,21 @@ public class DataMobilJDBCTemplate implements DataMobilDAO {
 
     @Override
     public List<DataMobil> pilih_data_like(String kode) {
-
+        List<DataMobil> dataMobils = null;
         String kode_ = "%" + kode + "%";
-        List<DataMobil> dataMobils = jdbcTemplateObject.query(SQL_TAMPIL_DATA_MOBIL_BERDASAR_WHERE, new DataMobilMapper(), kode_, kode_, kode_, kode_);
+        try {
+            dataMobils = jdbcTemplateObject.query(SQL_TAMPIL_DATA_MOBIL_BERDASAR_LIKE, new DataMobilMapper(), kode_, kode_, kode_, kode_);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error : " + e);
+            return null;
+        }
+        dataMobils = jdbcTemplateObject.query(SQL_TAMPIL_DATA_MOBIL_BERDASAR_LIKE, new DataMobilMapper(), kode_, kode_, kode_, kode_);
         return dataMobils;
     }
 
     @Override
     public DataMobil getNo_pol(Integer nopol) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public double ambil_selected_harga(ArrayList<String> selectedItems) throws ClassNotFoundException {
-
-        /*double harga = 0;
-            String sql_ambil_selected_harga= "select mm.*,pm.nama_mobil,jm.nama_ow,jmm.nama_jenis,jmm.harga "
-                    + " FROM tbl_data_mobil        AS mm  "
-                    + " INNER JOIN tbl_merk_mobil        AS PM   ON mm.id_merk_mobil=pm.id_merk_mobil "
-                    + " INNER JOIN tbl_owner_mobil       AS jm   ON mm.id_owner=jm.id_owner "
-                    + " INNER JOIN tbl_jenis_mobil AS jmm ON jmm.id_jenis_mobil=pm.id_jenis_mobil 
-                    + " where mm.no_pol=?";"*/
-
- /*for (String list : selectedItems) {
-                
-                
-                System.out.println("didalam crud"+list);
-                ResultSet rs = stmt.executeQuery(sql);
-                rs.next();
-                harga += rs.getDouble(4);
-                rs.close();
-            }*/
- /*List<Pegawai> list = jdbcTemplateObject.query(sql_ambil_selected_harga, (ResultSet rs, int i) -> {
-            try {
-                harga +=rs.getDouble("harga");
-            } catch (SQLException ex) {
-                Logger.getLogger(DataMobilJDBCTemplate.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-        return harga;*/
-        return 0;
     }
 
     public class DataMobilMapper implements RowMapper<DataMobil> {

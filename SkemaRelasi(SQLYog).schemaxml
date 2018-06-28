@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="latin1" collation="latin1_swedish_ci">db_sbd12_sewa_mobil</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="tbl_data_transaksi" view="colnames">
+<left>10</left>
+<top>120</top>
+<width>178</width>
+<height>231</height>
+<sql_create_table>CREATE TABLE `tbl_data_transaksi` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `id_kostumer` char(9) NOT NULL,
+  `id_pegawai` char(9) NOT NULL,
+  `tglpinjam` date NOT NULL,
+  `tglkembali` date DEFAULT NULL,
+  `harga_sebelum_diskon` double NOT NULL,
+  `harga_diskon` double NOT NULL,
+  `tgltransaksi` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Status` enum('BELUM SELESAI','SELESAI') NOT NULL,
+  PRIMARY KEY (`no_transaksi`),
+  KEY `id_kostumer` (`id_kostumer`),
+  KEY `id_pegawai` (`id_pegawai`),
+  CONSTRAINT `tbl_data_transaksi_ibfk_3` FOREIGN KEY (`id_pegawai`) REFERENCES `tbl_pegawai` (`id_pegawai`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_data_transaksi_ibfk_4` FOREIGN KEY (`id_kostumer`) REFERENCES `tbl_kostumer` (`id_kostumer`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="detail_transaksi" view="colnames">
+<left>231</left>
+<top>3</top>
+<width>195</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `detail_transaksi` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `no_pol` char(9) NOT NULL,
+  `id_petugas_pengembalian` char(9) DEFAULT NULL,
+  `tglkembali` datetime DEFAULT NULL,
+  `denda` double DEFAULT NULL,
+  `catatan` text,
+  PRIMARY KEY (`no_transaksi`,`no_pol`),
+  KEY `no_pol` (`no_pol`),
+  KEY `id_petugas_pengembalian` (`id_petugas_pengembalian`),
+  CONSTRAINT `detail_transaksi_ibfk_2` FOREIGN KEY (`no_pol`) REFERENCES `tbl_data_mobil` (`no_pol`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `detail_transaksi_ibfk_3` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `detail_transaksi_ibfk_4` FOREIGN KEY (`id_petugas_pengembalian`) REFERENCES `tbl_pegawai` (`id_pegawai`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_data_mobil" view="colnames">
+<left>463</left>
+<top>7</top>
+<width>131</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `tbl_data_mobil` (
+  `no_pol` char(9) NOT NULL,
+  `id_merk_mobil` char(8) NOT NULL,
+  `id_owner` char(8) NOT NULL,
+  PRIMARY KEY (`no_pol`),
+  KEY `id_owner` (`id_owner`),
+  KEY `id_merk_mobil` (`id_merk_mobil`),
+  CONSTRAINT `tbl_data_mobil_ibfk_1` FOREIGN KEY (`id_owner`) REFERENCES `tbl_owner_mobil` (`id_owner`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_data_mobil_ibfk_2` FOREIGN KEY (`id_merk_mobil`) REFERENCES `tbl_merk_mobil` (`id_merk_mobil`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_merk_mobil" view="colnames">
+<left>633</left>
+<top>9</top>
+<width>154</width>
+<height>146</height>
+<sql_create_table>CREATE TABLE `tbl_merk_mobil` (
+  `id_merk_mobil` char(8) NOT NULL,
+  `id_produsen_mobil` char(8) NOT NULL,
+  `id_jenis_mobil` char(8) NOT NULL,
+  `nama_mobil` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id_merk_mobil`),
+  KEY `id_produsen_mobil` (`id_produsen_mobil`),
+  KEY `id_jenis_moobil_ibfk_1` (`id_jenis_mobil`),
+  CONSTRAINT `id_jenis_moobil_ibfk_1` FOREIGN KEY (`id_jenis_mobil`) REFERENCES `tbl_jenis_mobil` (`id_jenis_mobil`),
+  CONSTRAINT `tbl_merk_mobil_ibfk_1` FOREIGN KEY (`id_produsen_mobil`) REFERENCES `tbl_produsen_mobil` (`id_produsen_mobil`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_produsen_mobil" view="colnames">
+<left>818</left>
+<top>14</top>
+<width>154</width>
+<height>112</height>
+<sql_create_table>CREATE TABLE `tbl_produsen_mobil` (
+  `id_produsen_mobil` char(8) NOT NULL,
+  `nama_produsen` varchar(20) NOT NULL,
+  PRIMARY KEY (`id_produsen_mobil`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_pegawai" view="colnames">
+<left>452</left>
+<top>155</top>
+<width>151</width>
+<height>265</height>
+<sql_create_table>CREATE TABLE `tbl_pegawai` (
+  `id_pegawai` char(9) NOT NULL,
+  `no_ktp_p` char(128) NOT NULL,
+  `nama_depan_p` varchar(15) NOT NULL,
+  `nama_belakang_p` varchar(15) DEFAULT NULL,
+  `jenis_kelamin_p` enum('L','P') DEFAULT NULL,
+  `alamat_p` varchar(30) DEFAULT NULL,
+  `tanggal_lahir_p` date DEFAULT NULL,
+  `no_telepon_p` varchar(13) DEFAULT NULL,
+  `username` varchar(15) DEFAULT NULL,
+  `password` varchar(15) DEFAULT NULL,
+  `tanggal_join_p` date DEFAULT NULL,
+  PRIMARY KEY (`id_pegawai`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_owner_mobil" view="colnames">
+<left>636</left>
+<top>166</top>
+<width>148</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `tbl_owner_mobil` (
+  `id_owner` char(9) NOT NULL,
+  `no_ktp_ow` char(128) NOT NULL,
+  `nama_ow` varchar(30) NOT NULL,
+  `jenis_kelamin_ow` enum('L','P') DEFAULT NULL,
+  `alamat_ow` varchar(30) NOT NULL,
+  `no_telepon_ow` varchar(13) NOT NULL,
+  PRIMARY KEY (`id_owner`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_jenis_mobil" view="colnames">
+<left>822</left>
+<top>146</top>
+<width>128</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `tbl_jenis_mobil` (
+  `id_jenis_mobil` char(8) NOT NULL,
+  `nama_jenis` varchar(20) DEFAULT NULL,
+  `harga` double DEFAULT NULL,
+  PRIMARY KEY (`id_jenis_mobil`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_kostumer" view="colnames">
+<left>270</left>
+<top>376</top>
+<width>151</width>
+<height>265</height>
+<sql_create_table>CREATE TABLE `tbl_kostumer` (
+  `id_kostumer` char(9) NOT NULL,
+  `no_ktp` char(128) NOT NULL,
+  `id_member` char(9) DEFAULT NULL,
+  `jenis_member` char(4) NOT NULL DEFAULT 'NON',
+  `nama_depan_k` varchar(15) NOT NULL,
+  `nama_belakang_k` varchar(15) DEFAULT NULL,
+  `jenis_kelamin_k` enum('L','P') DEFAULT NULL,
+  `alamat_k` varchar(30) DEFAULT NULL,
+  `tanggal_lahir_k` date DEFAULT NULL,
+  `no_telepon_k` varchar(13) DEFAULT NULL,
+  `tanggal_join` date DEFAULT NULL,
+  PRIMARY KEY (`id_kostumer`),
+  KEY `jenis_member` (`jenis_member`),
+  CONSTRAINT `tbl_kostumer_ibfk_1` FOREIGN KEY (`jenis_member`) REFERENCES `tbl_jenis_member_dan_diskon` (`id_jenis_member`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_jenis_member_dan_diskon" view="colnames">
+<left>457</left>
+<top>434</top>
+<width>167</width>
+<height>146</height>
+<sql_create_table>CREATE TABLE `tbl_jenis_member_dan_diskon` (
+  `counter` int(11) NOT NULL AUTO_INCREMENT,
+  `id_jenis_member` char(5) NOT NULL,
+  `nama_jenis_member` varchar(20) DEFAULT NULL,
+  `diskon` double DEFAULT NULL,
+  PRIMARY KEY (`id_jenis_member`),
+  UNIQUE KEY `counter` (`counter`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_pembayaran" view="colnames">
+<left>84</left>
+<top>427</top>
+<width>152</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `tbl_pembayaran` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `id_pembayaran` tinyint(4) NOT NULL DEFAULT '1',
+  `jenis_pembayaran` enum('PELUNASAN','DENDA') NOT NULL,
+  `jumlah` double NOT NULL,
+  `tglpembayaran` datetime NOT NULL,
+  `keterangan` text,
+  PRIMARY KEY (`no_transaksi`,`id_pembayaran`),
+  CONSTRAINT `tbl_pembayaran_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="tbl_pengembalian" view="colnames">
+<left>261</left>
+<top>221</top>
+<width>140</width>
+<height>146</height>
+<sql_create_table>CREATE TABLE `tbl_pengembalian` (
+  `no_transaksi` varchar(15) NOT NULL,
+  `id_pegawai` char(9) NOT NULL,
+  `denda` double NOT NULL DEFAULT '0',
+  `tglpengembalian` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`no_transaksi`),
+  KEY `tbl_pengembalian_ibfk_2` (`id_pegawai`),
+  CONSTRAINT `tbl_pengembalian_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `tbl_data_transaksi` (`no_transaksi`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_pengembalian_ibfk_2` FOREIGN KEY (`id_pegawai`) REFERENCES `tbl_pegawai` (`id_pegawai`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>

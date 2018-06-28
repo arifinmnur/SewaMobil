@@ -9,6 +9,7 @@ package com.sbd12.sewamobil.Pkg_Kostumer;
  *
  * @author ArieDZ_2
  */
+import com.sbd12.sewamobil.Pkg_Jenis_Member_dan_Diskon.JenisMember;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -267,13 +268,13 @@ public class KostumerJDBCTemplate implements KostumerDAO {
     }
 
     @Override
-    public List<Jenis_Member> combo_box_jenis_member(JComboBox Combo) {
+    public List<JenisMember> combo_box_jenis_member(JComboBox Combo) {
         String SQL = "SELECT * FROM tbl_jenis_member_dan_diskon ORDER BY counter ASC";
 
         Combo.removeAllItems();
         Combo.addItem("Pilih (Jenis Member)");
-        List<Jenis_Member> list = jdbcTemplateObject.query(SQL, (ResultSet rs, int i) -> {
-            Jenis_Member jenis_Member = new Jenis_Member();
+        List<JenisMember> list = jdbcTemplateObject.query(SQL, (ResultSet rs, int i) -> {
+            JenisMember jenis_Member = new JenisMember();
             jenis_Member.setCounter(rs.getInt("counter"));
             jenis_Member.setId_jenis_member(rs.getString("id_jenis_member"));
             jenis_Member.setNama_jenis_member(rs.getString("nama_jenis_member"));
@@ -286,10 +287,10 @@ public class KostumerJDBCTemplate implements KostumerDAO {
     }
 
     @Override
-    public Jenis_Member pilih_data_jenis_member(String kode) {
+    public JenisMember pilih_data_jenis_member(String kode) {
         String SQL = "SELECT * FROM tbl_jenis_member_dan_diskon WHERE id_jenis_member=?  ORDER BY counter ASC ";
-        List<Jenis_Member> jenis_Members = jdbcTemplateObject.query(SQL, (ResultSet rs, int i) -> {
-            Jenis_Member jenis_Member = new Jenis_Member();
+        List<JenisMember> jenis_Members = jdbcTemplateObject.query(SQL, (ResultSet rs, int i) -> {
+            JenisMember jenis_Member = new JenisMember();
             jenis_Member.setCounter(rs.getInt("counter"));
             jenis_Member.setId_jenis_member(rs.getString("id_jenis_member"));
             jenis_Member.setNama_jenis_member(rs.getString("nama_jenis_member"));
@@ -303,18 +304,6 @@ public class KostumerJDBCTemplate implements KostumerDAO {
 
         @Override
         public Kostumer mapRow(ResultSet rs, int rowNum) throws SQLException {
-//         private String id_kostumer;
-//        private String no_ktp;
-//        private String id_member;
-//        private String status_member;
-//        private String nama_depan_k;
-//        private String nama_belakang_k;
-//        private String nama_lengkap_k;
-//        private String jenis_kelamin_k;
-//        private String alamat_k;
-//        private Date tanggal_lahir_k;
-//        private String no_telepon_k;
-//        private Date tanggal_join;
 
             Kostumer kostumer = new Kostumer();
             kostumer.setId_kostumer(rs.getString("id_kostumer"));

@@ -52,6 +52,7 @@ public class MerkMobilJDBCTemplate implements MerkMobilDAO {
     private final String QUERY_PILIH_CARI = QUERY_PILIH_SEMUA + " where mm.id_merk_mobil=?";
     private final String QUERY_PILIH_LIKE = QUERY_PILIH_SEMUA + " where mm.nama_mobil like ?";
 
+   
     public String generate_id_merk(String id_produsen) {
         /*SELECT MAX(CONV(SUBSTRING(id_kostumer,3,7),16,10)) FROM tbl_kostumer;*/
         String generate = "";
